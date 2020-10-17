@@ -1,0 +1,34 @@
+{
+  "name": "zero-editor",
+  "version": "1.0.0",
+  "description": "The web node-based Zero editor.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pac-zero/Zero-Editor.git"
+  },
+  "keywords": [
+    "zero",
+    "editor",
+    "pac3",
+    "pac",
+    "gmod"
+  ],
+  "author": "Earu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pac-zero/Zero-Editor/issues"
+  },
+  "homepage": "https://github.com/pac-zero/Zero-Editor#readme",
+  "devDependencies": {
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^6.2.0",
+    "typescript": "^3.6.3",
+    "webpack": "^4.41.0",
+    "webpack-cli": "^3.3.9"
+  },
+  "dependencies": {}
+}
