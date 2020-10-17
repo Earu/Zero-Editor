@@ -1,5 +1,3 @@
-class Editor {
-	constructor() {
+import Editor from "./Editor";
 
-	}
-}
+const zeroEditor = new Editor();
