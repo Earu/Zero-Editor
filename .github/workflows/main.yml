@@ -22,6 +22,11 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      - name: Use Node.js 13
+        uses: actions/setup-node@v1
+        with:
+            node-version: 13
+
       # Runs a single command using the runners shell
       - name: Install deps
         run: npm install
@@ -30,8 +35,8 @@ jobs:
         run: npx webpack
 
       # Runs a set of commands using the runners shell
-      - name: Push to repo
-        run: |
-          git add *
-          git commit -m "auto-build"
-          git push
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
