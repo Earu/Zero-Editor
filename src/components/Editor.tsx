@@ -1,6 +1,8 @@
 import { Guid } from "guid-typescript";
 import React from "react";
 import INode from "../nodes/INode";
+import "./grid.png";
+import "./Editor.css";
 
 export default class Editor extends React.Component {
 	private nodeTable: Map<Guid, INode>;
@@ -39,6 +41,18 @@ export default class Editor extends React.Component {
 	}
 
 	public render(): JSX.Element {
-		return <div/>;
+		return (<div id="editor">
+			<div id="editor-menu">
+				<div>
+					<button>Import PAC3</button>
+					<button>Export PAC3</button>
+				</div>
+				<div>
+					<button>Load Project</button>
+					<button>Save Project</button>
+				</div>
+				<h1>Zero Editor</h1>
+			</div>
+		</div>);
 	}
 }
