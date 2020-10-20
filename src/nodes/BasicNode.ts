@@ -1,4 +1,4 @@
-import Editor from "../Editor";
+import Editor from "../components/Editor";
 import Angle from "../gmodTypes/Angle";
 import Color from "../gmodTypes/Color";
 import Vector from "../gmodTypes/Vector";
@@ -22,14 +22,17 @@ class BasicNode<T> extends Node {
 
 	public fromJson(json: string): void {
 		const jsonObj = JSON.parse(json);
-		this._id = jsonObj.id;
+		this.setId(jsonObj.id);
+		this.setNsfw(jsonObj.nsfw);
+		this.setEnabled(jsonObj.enabled);
 		this._value = jsonObj.value;
 	}
 
 	public toJson(): string {
 		return JSON.stringify({
-			id: super._id,
-			isNsfw: super._isNsfw,
+			id: super.getId(),
+			nsfw: super.isNsfw(),
+			enabled: this.isEnabled(),
 			value: this._value,
 		});
 	}
