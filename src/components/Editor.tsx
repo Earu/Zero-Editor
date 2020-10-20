@@ -1,10 +1,13 @@
 import { Guid } from "guid-typescript";
-import INode from "./nodes/INode";
+import React from "react";
+import INode from "../nodes/INode";
 
-export default class Editor {
+export default class Editor extends React.Component {
 	private nodeTable: Map<Guid, INode>;
 
-	constructor() {
+	constructor(props: any) {
+		super(props);
+
 		this.nodeTable = new Map<Guid, INode>();
 	}
 
@@ -33,5 +36,9 @@ export default class Editor {
 	// NOT THE SAME AS PAC JSON FILES
 	public load(json: string): void {
 		// IMPL TODO
+	}
+
+	public render(): JSX.Element {
+		return <div/>;
 	}
 }
