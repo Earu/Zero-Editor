@@ -1,36 +1,40 @@
 {
   "name": "zero-editor",
-  "version": "1.0.0",
-  "description": "The web node-based Zero editor.",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/pac-zero/Zero-Editor.git"
-  },
-  "keywords": [
-    "zero",
-    "editor",
-    "pac3",
-    "pac",
-    "gmod"
-  ],
-  "author": "Earu",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/pac-zero/Zero-Editor/issues"
-  },
-  "homepage": "https://github.com/pac-zero/Zero-Editor#readme",
-  "devDependencies": {
-    "source-map-loader": "^0.2.4",
-    "ts-loader": "^6.2.0",
-    "typescript": "^3.6.3",
-    "webpack": "^4.41.0",
-    "webpack-cli": "^3.3.9"
-  },
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "guid-typescript": "^1.0.9"
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
+    "@types/jest": "^24.9.1",
+    "@types/node": "^12.12.69",
+    "@types/react": "^16.9.53",
+    "@types/react-dom": "^16.9.8",
+    "guid-typescript": "^1.0.9",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-scripts": "3.4.3",
+    "typescript": "^3.7.5"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
