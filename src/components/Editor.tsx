@@ -16,7 +16,7 @@ export default class Editor extends React.Component {
 	// load a pac json file and convert it to our
 	// node scheme
 	public loadPacJson(json: string): void {
-		const jsonObj = JSON.parse(json);
+		//const jsonObj = JSON.parse(json);
 
 		// IMPL TODO
 	}
