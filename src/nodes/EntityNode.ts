@@ -2,7 +2,7 @@ import Node from "./Node";
 import { AngleNode, ChoiceNode, ColorNode, InputNode, MaterialNode, ModelNode, NumberNode, ToggleNode, VectorNode } from "./BasicNode";
 
 export default class EntityNode extends Node {
-	private model: ModelNode;
+	/*private model: ModelNode;
 	private material: MaterialNode;
 	private bone: InputNode;
 	private boneMerge: ToggleNode;
@@ -35,5 +35,5 @@ export default class EntityNode extends Node {
 	private ignoreZ: ToggleNode;
 	private noTextureFiltering: ToggleNode;
 	private blendMode: ChoiceNode;
-	private drawOrder: NumberNode;
+	private drawOrder: NumberNode;*/
 }
