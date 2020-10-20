@@ -2,7 +2,7 @@
   "short_name": "Zero Editor",
   "name": "Zero Editor",
   "icons": [],
-  "start_url": ".",
+  "start_url": "./",
   "display": "standalone",
   "theme_color": "#ce4444",
   "background_color": "#242424"
