@@ -1,0 +1,30 @@
+#node-selector-menu {
+	width: 250px;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	flex-flow: column;
+	height: 100%;
+	border-right: solid 1px #494949;
+	position: fixed;
+}
+
+#node-selector-menu>input {
+	margin: 5px;
+	margin-top: 10px;
+	background-color: rgba(0, 0, 0, 0.75);
+	border: solid 2px rgba(0, 0, 0, 0.75);
+	color: white;
+	padding: 5px;
+}
+
+#node-selector-menu>input:focus {
+	border: solid 2px #494949;
+}
+
+#node-selector-menu>hr {
+	margin: 0;
+	width: 100%;
+	margin-top: 5px;
+	margin-left: -2px;
+	color: #494949;
+}
