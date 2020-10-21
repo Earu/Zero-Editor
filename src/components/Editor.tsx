@@ -3,6 +3,7 @@ import React from "react";
 import INode from "../nodes/INode";
 import "./grid.png";
 import "./Editor.css";
+import NodeSelector from "./NodeSelector";
 
 export default class Editor extends React.Component {
 	private nodeTable: Map<Guid, INode>;
@@ -40,19 +41,25 @@ export default class Editor extends React.Component {
 		// IMPL TODO
 	}
 
+	private onLoadProject(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {}
+	private onSaveProject(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {}
+	private onImportPac3(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {}
+	private onExportPac3(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {}
+
 	public render(): JSX.Element {
 		return (<div id="editor">
 			<div id="editor-menu">
 				<div>
+					<button onClick={this.onLoadProject}>Load Project</button>
+					<button>Save Project</button>
+				</div>
+				<div>
 					<button>Import PAC3</button>
 					<button>Export PAC3</button>
 				</div>
-				<div>
-					<button>Load Project</button>
-					<button>Save Project</button>
-				</div>
 				<h1>Zero Editor</h1>
 			</div>
+			<NodeSelector />
 		</div>);
 	}
 }
