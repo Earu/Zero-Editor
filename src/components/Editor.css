@@ -4,7 +4,7 @@
 	position: fixed;
 	background: url("./grid.png");
 	background-repeat: repeat;
-	background-size: 25px;
+	background-size: 15px;
 }
 
 #editor-menu {
@@ -39,4 +39,6 @@
 	margin-right: 5px;
 	width: 100px;
 	cursor: pointer;
+	font-size: 15px;
+	font-family: 'Roboto', sans-serif;
 }

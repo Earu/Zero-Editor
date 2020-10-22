@@ -1,10 +1,10 @@
 .node-menu-category {
-	background-color: rgba(0, 0, 0, 0.75);
 	margin-top: 2px;
 }
 
 .node-menu-category>.header {
 	height: 30px;
+	background-color: rgba(0, 0, 0, 0.75);
 }
 
 .node-menu-category>.header>button {
@@ -24,4 +24,9 @@
 	top: 4px;
 	right: -10px;
 	user-select: none;
+}
+
+.node-menu-category>.content {
+	overflow: hidden;
+	margin-left: 10px;
 }
