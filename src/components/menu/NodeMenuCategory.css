@@ -1,0 +1,27 @@
+.node-menu-category {
+	background-color: rgba(0, 0, 0, 0.75);
+	margin-top: 2px;
+}
+
+.node-menu-category>.header {
+	height: 30px;
+}
+
+.node-menu-category>.header>button {
+	background: none;
+	border: none;
+	margin-right: 5px;
+	color: white;
+	float: right;
+	font-weight: bolder;
+	font-size: 20px;
+	pointer-events: none;
+}
+
+.node-menu-category>.header>span {
+	color: white;
+	position: relative;
+	top: 4px;
+	right: -10px;
+	user-select: none;
+}
