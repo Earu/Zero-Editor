@@ -1,0 +1,15 @@
+#graph {
+	width: 1000%;
+	height: 1000%;
+	position: fixed;
+	top: -500%;
+	left: -500%;
+	background: url("./grid.png");
+	background-repeat: repeat;
+	background-size: 15px;
+}
+
+#graph>canvas {
+	width: 100%;
+	height: 100%;
+}
