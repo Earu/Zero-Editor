@@ -1,9 +1,9 @@
 import { Guid } from "guid-typescript";
 import React from "react";
 import INode from "../nodes/INode";
-import "./grid.png";
 import "./Editor.css";
 import NodeMenuSelector from "./menu/NodeMenuSelector";
+import Graph from "./graph/Graph";
 
 export default class Editor extends React.Component {
 	private nodeTable: Map<Guid, INode>;
@@ -60,6 +60,7 @@ export default class Editor extends React.Component {
 				<h1>Zero Editor</h1>
 			</div>
 			<NodeMenuSelector />
+			<Graph />
 		</div>);
 	}
 }
