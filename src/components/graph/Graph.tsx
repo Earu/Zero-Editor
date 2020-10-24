@@ -41,7 +41,7 @@ export default class Graph extends React.Component {
 	public setTransform(xOffset: number | null = null, yOffset: number | null = null, scale: number | null = null) {
 		const scaleCoefTopLeft: number = (this.currentZoom * GRID_SIZE_HALF) + MOVING_FREEDOM;
 
-		if (xOffset) {
+		if (xOffset != null) {
 			const scaleCoefRight: number = (this.currentZoom * GRID_SIZE_HALF) + MOVING_FREEDOM;
 
 			if (xOffset > scaleCoefRight) {
@@ -53,7 +53,7 @@ export default class Graph extends React.Component {
 			}
 		}
 
-		if (yOffset) {
+		if (yOffset != null) {
 			const scaleCoefBottom: number = (this.currentZoom * GRID_SIZE_HALF) + MOVING_FREEDOM;
 
 			if (yOffset > scaleCoefBottom) {
@@ -65,7 +65,7 @@ export default class Graph extends React.Component {
 			}
 		}
 
-		if (scale) {
+		if (scale != null) {
 			this.currentZoom = scale >= ZOOM_MAX ? ZOOM_MAX : scale;
 		}
 
@@ -119,12 +119,13 @@ export default class Graph extends React.Component {
 	}
 
 	public componentDidMount(): void {
-		const body: HTMLElement = document.getElementById("graph") as HTMLElement;
-		if (body) {
-			body.onwheel = this.onWheel.bind(this);
-			body.onmousedown = this.onMouseDown.bind(this);
-			body.onmouseup = this.onMouseUp.bind(this);
-			body.onmousemove = this.onMouseMove.bind(this);
+		const graph: HTMLElement = document.getElementById("graph") as HTMLElement;
+		if (graph) {
+			graph.onwheel = this.onWheel.bind(this);
+			graph.onmousedown = this.onMouseDown.bind(this);
+			graph.onmouseup = this.onMouseUp.bind(this);
+			graph.onmouseleave = this.onMouseUp.bind(this);
+			graph.onmousemove = this.onMouseMove.bind(this);
 		}
 	}
 

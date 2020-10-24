@@ -60,13 +60,13 @@ export default class GraphControls extends React.Component<IGraphControlsPropert
 
 	public render(): JSX.Element {
 		return (<div id="graph-controls">
-			<button onClick={this.onResetTransform.bind(this)}>⟲</button>
+			<button onMouseDown={this.onResetTransform.bind(this)}>⟲</button>
 			<label htmlFor="graph-control-x">X</label>
 			<input id="graph-control-x" type="text" placeholder="X" defaultValue="0" onChange={this.onChangeX.bind(this)} />
 			<label htmlFor="graph-control-y">Y</label>
 			<input id="graph-control-y" type="text" placeholder="Y" defaultValue="0" onChange={this.onChangeY.bind(this)} />
 			<label htmlFor="graph-control-z">Z</label>
-			<input id="graph-control-z" type="text" placeholder="Z" defaultValue="1" onChange={this.onChangeZ.bind(this)} />
+			<input id="graph-control-z" type="text" placeholder="Z" defaultValue="10.00" onChange={this.onChangeZ.bind(this)} />
 		</div>);
 	}
 }
