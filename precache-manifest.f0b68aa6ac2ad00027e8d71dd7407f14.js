@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "3b6f3d7f2a9a49a5cb324b0d4aec414f",
+    "revision": "c8c0e03889cb950114b67c5c0714f405",
     "url": "/Zero-Editor/index.html"
   },
   {
-    "revision": "6f1993da5c72f2efcdf6",
+    "revision": "773dc6df93e478a11d70",
     "url": "/Zero-Editor/static/css/main.74090ff1.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/Zero-Editor/static/js/2.3dcce121.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "6f1993da5c72f2efcdf6",
-    "url": "/Zero-Editor/static/js/main.d2d9af40.chunk.js"
+    "revision": "773dc6df93e478a11d70",
+    "url": "/Zero-Editor/static/js/main.523d7b91.chunk.js"
   },
   {
     "revision": "2a97090395eb11564055",
