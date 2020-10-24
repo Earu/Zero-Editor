@@ -2,6 +2,13 @@ import React from "react";
 import "./grid.png";
 import "./Graph.css";
 
+const GRID_SIZE: number = 10000; // in px
+const GRID_SIZE_HALF: number = 5000; // in px
+const ZOOM_COEF: number = 0.01;
+const ZOOM_MAX: number = 5;
+const ZOOM_MIN: number = 0.2;
+const MOVING_FREEDOM: number = 250; // in px
+
 export default class Graph extends React.Component {
 	private currentZoom: number = 1;
 	private mouseDown: boolean = false;
@@ -15,14 +22,14 @@ export default class Graph extends React.Component {
 		event.preventDefault();
 
 		if (event.deltaY > 0) {
-			this.currentZoom -= 0.01;
+			this.currentZoom -= ZOOM_COEF;
 		} else if(event.deltaY < 0) {
-			this.currentZoom += 0.01;
+			this.currentZoom += ZOOM_COEF;
 		}
 
 		// clamp the zooming
-		this.currentZoom = this.currentZoom >= 5 ? 5 : this.currentZoom;
-		this.currentZoom = this.currentZoom <= 0.2 ? 0.2 : this.currentZoom;
+		this.currentZoom = this.currentZoom >= ZOOM_MAX ? ZOOM_MAX : this.currentZoom;
+		this.currentZoom = this.currentZoom <= ZOOM_MIN ? ZOOM_MIN : this.currentZoom;
 
 		const graph: HTMLElement = document.getElementById("graph") as HTMLElement;
 		if (graph) {
@@ -57,8 +64,24 @@ export default class Graph extends React.Component {
 		const x: number = this.getMouseX(event);
 		const y: number = this.getMouseY(event);
 
+		const scaleCoefTopLeft: number = (this.currentZoom * GRID_SIZE_HALF) + MOVING_FREEDOM;
+		const scaleCoefBottom: number = (this.currentZoom * (GRID_SIZE_HALF - window.innerHeight)) + MOVING_FREEDOM;
+		const scaleCoefRight: number = (this.currentZoom * (GRID_SIZE_HALF - window.innerWidth)) + MOVING_FREEDOM;
+
+		// clamp the movement so we cant go past the grid
 		this.xOffset = this.initialGrabX - x;
+		if (this.xOffset > scaleCoefRight) {
+			this.xOffset = scaleCoefRight;
+		} else if (this.xOffset < -scaleCoefTopLeft) {
+			this.xOffset = -scaleCoefTopLeft;
+		}
+
 		this.yOffset = this.initialGrabY - y;
+		if (this.yOffset > scaleCoefBottom) {
+			this.yOffset = scaleCoefBottom;
+		} else if (this.yOffset < -scaleCoefTopLeft) {
+			this.yOffset = -scaleCoefTopLeft;
+		}
 
 		const graph: HTMLElement = document.getElementById("graph") as HTMLElement;
 		if (graph) {
@@ -77,7 +100,10 @@ export default class Graph extends React.Component {
 	}
 
 	public render(): JSX.Element {
-		return (<div id="graph">
+		return (<div id="graph" style={{
+			width: GRID_SIZE, height: GRID_SIZE,
+			left: -GRID_SIZE_HALF, top: -GRID_SIZE_HALF
+		}}>
 			<canvas />
 		</div>);
 	}
