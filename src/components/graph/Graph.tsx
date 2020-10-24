@@ -1,6 +1,7 @@
 import React from "react";
 import "./grid.png";
 import "./Graph.css";
+import GraphControls from "./GraphControls";
 
 const GRID_SIZE: number = 10000; // in px
 const GRID_SIZE_HALF: number = 5000; // in px
@@ -18,6 +19,59 @@ export default class Graph extends React.Component {
 	private xOffset: number = 0;
 	private yOffset: number = 0;
 
+	private updateTransform(): void {
+		const graph: HTMLElement = document.getElementById("graph") as HTMLElement;
+		if (graph) {
+			graph.style.transform = `translateX(${-this.xOffset}px) translateY(${-this.yOffset}px) scale(${this.currentZoom})`;
+		}
+
+		const controls: HTMLElement = document.getElementById("graph-controls") as HTMLElement;
+		if (!controls) return;
+
+		const inputs = controls.getElementsByTagName("input");
+		const inputX: HTMLInputElement = inputs[0];
+		const inputY: HTMLInputElement = inputs[1];
+		const inputZ: HTMLInputElement = inputs[2];
+
+		inputX.value = (this.xOffset / this.currentZoom).toFixed(0);
+		inputY.value = (this.yOffset / this.currentZoom).toFixed(0);
+		inputZ.value = (this.currentZoom * 10).toFixed(2);
+	}
+
+	public setTransform(xOffset: number | null = null, yOffset: number | null = null, scale: number | null = null) {
+		const scaleCoefTopLeft: number = (this.currentZoom * GRID_SIZE_HALF) + MOVING_FREEDOM;
+
+		if (xOffset) {
+			const scaleCoefRight: number = (this.currentZoom * GRID_SIZE_HALF) + MOVING_FREEDOM;
+
+			if (xOffset > scaleCoefRight) {
+				this.xOffset = scaleCoefRight;
+			} else if (xOffset < -scaleCoefTopLeft) {
+				this.xOffset = -scaleCoefTopLeft;
+			} else {
+				this.xOffset = xOffset;
+			}
+		}
+
+		if (yOffset) {
+			const scaleCoefBottom: number = (this.currentZoom * GRID_SIZE_HALF) + MOVING_FREEDOM;
+
+			if (yOffset > scaleCoefBottom) {
+				this.yOffset = scaleCoefBottom;
+			} else if (yOffset < -scaleCoefTopLeft) {
+				this.yOffset = -scaleCoefTopLeft;
+			} else {
+				this.yOffset = yOffset;
+			}
+		}
+
+		if (scale) {
+			this.currentZoom = scale >= ZOOM_MAX ? ZOOM_MAX : scale;
+		}
+
+		this.updateTransform();
+	}
+
 	private onWheel(event: WheelEvent): void {
 		event.preventDefault();
 
@@ -31,10 +85,7 @@ export default class Graph extends React.Component {
 		this.currentZoom = this.currentZoom >= ZOOM_MAX ? ZOOM_MAX : this.currentZoom;
 		this.currentZoom = this.currentZoom <= ZOOM_MIN ? ZOOM_MIN : this.currentZoom;
 
-		const graph: HTMLElement = document.getElementById("graph") as HTMLElement;
-		if (graph) {
-			graph.style.transform = `translateX(${-this.xOffset}px) translateY(${-this.yOffset}px) scale(${this.currentZoom})`;
-		}
+		this.updateTransform();
 	}
 
 	private getMouseX(event: MouseEvent): number {
@@ -64,33 +115,11 @@ export default class Graph extends React.Component {
 		const x: number = this.getMouseX(event);
 		const y: number = this.getMouseY(event);
 
-		const scaleCoefTopLeft: number = (this.currentZoom * GRID_SIZE_HALF) + MOVING_FREEDOM;
-		const scaleCoefBottom: number = (this.currentZoom * (GRID_SIZE_HALF - window.innerHeight)) + MOVING_FREEDOM;
-		const scaleCoefRight: number = (this.currentZoom * (GRID_SIZE_HALF - window.innerWidth)) + MOVING_FREEDOM;
-
-		// clamp the movement so we cant go past the grid
-		this.xOffset = this.initialGrabX - x;
-		if (this.xOffset > scaleCoefRight) {
-			this.xOffset = scaleCoefRight;
-		} else if (this.xOffset < -scaleCoefTopLeft) {
-			this.xOffset = -scaleCoefTopLeft;
-		}
-
-		this.yOffset = this.initialGrabY - y;
-		if (this.yOffset > scaleCoefBottom) {
-			this.yOffset = scaleCoefBottom;
-		} else if (this.yOffset < -scaleCoefTopLeft) {
-			this.yOffset = -scaleCoefTopLeft;
-		}
-
-		const graph: HTMLElement = document.getElementById("graph") as HTMLElement;
-		if (graph) {
-			graph.style.transform = `translateX(${-this.xOffset}px) translateY(${-this.yOffset}px) scale(${this.currentZoom})`;
-		}
+		this.setTransform(this.initialGrabX - x, this.initialGrabY - y, this.currentZoom);
 	}
 
 	public componentDidMount(): void {
-		const body: HTMLElement = document.body;
+		const body: HTMLElement = document.getElementById("graph") as HTMLElement;
 		if (body) {
 			body.onwheel = this.onWheel.bind(this);
 			body.onmousedown = this.onMouseDown.bind(this);
@@ -100,11 +129,14 @@ export default class Graph extends React.Component {
 	}
 
 	public render(): JSX.Element {
-		return (<div id="graph" style={{
-			width: GRID_SIZE, height: GRID_SIZE,
-			left: -GRID_SIZE_HALF, top: -GRID_SIZE_HALF
-		}}>
-			<canvas />
+		return (<div>
+			<GraphControls graph={this}/>
+			<div id="graph" style={{
+				width: GRID_SIZE, height: GRID_SIZE,
+				left: -(GRID_SIZE_HALF - (window.innerWidth / 2)), top: -(GRID_SIZE_HALF - (window.innerHeight / 2))
+			}}>
+				<canvas />
+			</div>
 		</div>);
 	}
 }
