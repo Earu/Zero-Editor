@@ -23,16 +23,12 @@ class BasicNode<T> extends Node {
 	public fromJson(json: string): void {
 		const jsonObj = JSON.parse(json);
 		this.setId(jsonObj.id);
-		this.setNsfw(jsonObj.nsfw);
-		this.setEnabled(jsonObj.enabled);
 		this._value = jsonObj.value;
 	}
 
 	public toJson(): string {
 		return JSON.stringify({
 			id: super.getId(),
-			nsfw: super.isNsfw(),
-			enabled: this.isEnabled(),
 			value: this._value,
 		});
 	}
