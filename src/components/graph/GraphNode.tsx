@@ -1,25 +1,25 @@
 import React from "react";
 import Node from "../../nodes/Node";
 import Graph from "./Graph";
+import "./GraphNode.css";
 
 interface IGraphNodeProperties {
 	graph: Graph;
 	node: Node;
-	x: number;
-	y: number;
 }
 
 export default class GraphNode extends React.Component<IGraphNodeProperties> {
-	private computeCoordinates(): Array<number> {
-		return [ this.props.x, this.props.y ];
-	}
 
 	public render(): JSX.Element {
-		const coordinates = this.computeCoordinates();
-		return <button style={{
+		return <div className="graph-node" style={{
 			position: "absolute",
-			top: coordinates[0],
-			left: coordinates[1],
-		}}>GRAPH NODE</button>;
+			left: this.props.node.getX(),
+			top: this.props.node.getY(),
+		}}>
+			<div style={{ backgroundImage: `linear-gradient(to right, ${this.props.node.getColor()}, #111)` }} className="header" >
+				<div>{this.props.node.getName()}</div>
+			</div>
+			<div className="content"></div>
+		</div>;
 	}
 }

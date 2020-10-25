@@ -3,6 +3,9 @@ import "./grid.png";
 import "./Graph.css";
 import GraphControls from "./GraphControls";
 import Editor from "../Editor";
+import { Guid } from "guid-typescript";
+import Node from "../../nodes/Node";
+import GraphNode from "./GraphNode";
 
 const GRID_SIZE: number = 10000; // in px
 const GRID_SIZE_HALF: number = 5000; // in px
@@ -15,7 +18,11 @@ interface IGraphProperties {
 	editor: Editor;
 }
 
-export default class Graph extends React.Component<IGraphProperties> {
+interface IGraphState {
+	nodes: Array<Node>;
+}
+
+export default class Graph extends React.Component<IGraphProperties, IGraphState> {
 	private currentZoom: number = 1;
 	private mouseDown: boolean = false;
 
@@ -24,9 +31,13 @@ export default class Graph extends React.Component<IGraphProperties> {
 	private xOffset: number = 0;
 	private yOffset: number = 0;
 
+	private nodeTable: Map<Guid, Node>;
+
 	constructor(props: IGraphProperties) {
 		super(props);
 		this.props.editor.graph = this;
+		this.nodeTable = new Map<Guid, Node>();
+		this.state = { nodes: [] };
 	}
 
 	public getCurrentZoom(): number {
@@ -39,6 +50,10 @@ export default class Graph extends React.Component<IGraphProperties> {
 
 	public getYOffset(): number {
 		return this.yOffset;
+	}
+
+	public getSize(): number {
+		return GRID_SIZE;
 	}
 
 	private updateTransform(): void {
@@ -94,6 +109,17 @@ export default class Graph extends React.Component<IGraphProperties> {
 		this.updateTransform();
 	}
 
+	public addNode(node: Node): void {
+		this.nodeTable.set(node.getId(), node);
+		this.state.nodes.push(node);
+		this.setState({ nodes: this.state.nodes });
+		this.updateTransform();
+	}
+
+	public getNode(id: Guid): Node | undefined {
+		return this.nodeTable.get(id);
+	}
+
 	private onWheel(event: WheelEvent): void {
 		event.preventDefault();
 
@@ -136,7 +162,6 @@ export default class Graph extends React.Component<IGraphProperties> {
 
 		const x: number = this.getMouseX(event);
 		const y: number = this.getMouseY(event);
-
 		this.setTransform(this.initialGrabX - x, this.initialGrabY - y, this.currentZoom);
 	}
 
@@ -151,6 +176,15 @@ export default class Graph extends React.Component<IGraphProperties> {
 		}
 	}
 
+	private renderNodes(): Array<JSX.Element> {
+		const ret: Array<JSX.Element> = [];
+		for(const node of this.state.nodes) {
+			ret.push(<GraphNode key={node.getId().toString()} graph={this} node={node} />);
+		}
+
+		return ret;
+	}
+
 	public render(): JSX.Element {
 		return (<div>
 			<GraphControls graph={this}/>
@@ -158,6 +192,7 @@ export default class Graph extends React.Component<IGraphProperties> {
 				width: GRID_SIZE, height: GRID_SIZE,
 				left: -(GRID_SIZE_HALF - (window.innerWidth / 2)), top: -(GRID_SIZE_HALF - (window.innerHeight / 2))
 			}}>
+				{this.renderNodes()}
 				<canvas />
 			</div>
 		</div>);
