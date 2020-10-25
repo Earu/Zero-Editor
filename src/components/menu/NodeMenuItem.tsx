@@ -78,16 +78,35 @@ export default class NodeMenuItem extends React.Component<INodeMenuItemPropertie
 			moveAt(event.pageX, event.pageY);
 		}
 
+		// this is because sometimes the browser likes to call this event so fast
+		// that it creates two nodes instead of one
+		let dropped = false;
 		const stopMove = (stopEvent: MouseEvent) => {
+			if (dropped) return;
+
 			document.removeEventListener("mousemove", onMouseMove);
+
 			dragItem.onmouseup = null;
 			dragItem.remove();
 			this.onItemDropped(stopEvent.pageX, stopEvent.pageY);
+			dropped = true;
 		}
 
 		document.addEventListener("mousemove", onMouseMove);
 		dragItem.onmouseup = stopMove;
-		dragItem.onmouseleave = stopMove;
+
+		// a hack so the drag n drop doesn't die when the user leaves the editor
+		const onMouseOut = (event: MouseEvent) => {
+			const mouseX = event.pageX;
+			const mouseY = event.pageY;
+			if ((mouseY >= 0 && mouseY <= window.innerHeight) && (mouseX >= 0 && mouseX <= window.innerWidth))
+				return;
+
+			stopMove(event);
+			document.removeEventListener("mouseout", onMouseOut)
+		}
+
+		document.addEventListener("mouseout", onMouseOut);
 	}
 
 	public render(): JSX.Element {

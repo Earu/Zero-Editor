@@ -37,12 +37,12 @@ export default class Node implements INode {
 		const screenHeight: number = window.innerHeight;
 
 		const currentZoom: number = graph.getCurrentZoom();
-		const xOffset: number = (graph.getXOffset() / currentZoom) - (screenWidth / 2);
-		const yOffset: number = (graph.getYOffset() / currentZoom) - (screenHeight / 2);
+		const xOffset: number = (graph.getXOffset() / currentZoom) - ((screenWidth / 2) / currentZoom);
+		const yOffset: number = (graph.getYOffset() / currentZoom) - ((screenHeight / 2) / currentZoom);
 		const halfSize: number = graph.getSize() / 2;
 
-		this.x = (halfSize + xOffset) + (pageX * currentZoom);
-		this.y = (halfSize + yOffset) + (pageY * currentZoom);
+		this.x = (halfSize + xOffset) + (pageX / currentZoom);
+		this.y = (halfSize + yOffset) + (pageY / currentZoom);
 	}
 
 	public getId(): Guid {
