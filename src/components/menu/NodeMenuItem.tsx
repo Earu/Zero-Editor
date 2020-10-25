@@ -31,26 +31,23 @@ export default class NodeMenuItem extends React.Component<INodeMenuItemPropertie
 		const dragItem = this.createDragItem();
 
 		document.body.append(dragItem);
-		moveAt(event.pageX, event.pageY);
 
 		// move the text along the coordinates (pageX, pageY)
-		function moveAt(pageX: number, pageY: number) {
+		const moveAt = (pageX: number, pageY: number) => {
 			dragItem.style.left = `${pageX - 50}px`;
 			dragItem.style.top = `${pageY - 12.5}px`;
 		}
 
-		// making a variable because "this" is the function so I can't access our
-		// class functions if I don't
-		const inst = this;
-		function stopMove(stopEvent: MouseEvent) {
+		moveAt(event.pageX, event.pageY);
+		const onMouseMove = (event: MouseEvent) => {
+			moveAt(event.pageX, event.pageY);
+		}
+
+		const stopMove = (stopEvent: MouseEvent) => {
 			document.removeEventListener("mousemove", onMouseMove);
 			dragItem.onmouseup = null;
 			dragItem.remove();
-			inst.onItemDropped(stopEvent.pageX, stopEvent.pageY);
-		}
-
-		function onMouseMove(event: MouseEvent) {
-			moveAt(event.pageX, event.pageY);
+			this.onItemDropped(stopEvent.pageX, stopEvent.pageY);
 		}
 
 		document.addEventListener("mousemove", onMouseMove);
