@@ -1,17 +1,30 @@
 import { Guid } from "guid-typescript";
 import React from "react";
-import INode from "../nodes/INode";
 import "./Editor.css";
 import NodeMenuSelector from "./menu/NodeMenuSelector";
 import Graph from "./graph/Graph";
+import Node from "../nodes/Node";
 
 export default class Editor extends React.Component {
-	private nodeTable: Map<Guid, INode>;
+	private _nodeTable: Map<Guid, Node>;
+	private _graph: Graph | null;
 
 	constructor(props: any) {
 		super(props);
+		this._nodeTable = new Map<Guid, Node>();
+		this._graph = null;
+	}
 
-		this.nodeTable = new Map<Guid, INode>();
+	public get nodeTable(): Map<Guid, Node> {
+		return this._nodeTable;
+	}
+
+	public get graph(): Graph | null {
+		return this._graph;
+	}
+
+	public set graph(graph: Graph | null) {
+		this._graph = graph;
 	}
 
 	// load a pac json file and convert it to our
@@ -41,10 +54,10 @@ export default class Editor extends React.Component {
 		// IMPL TODO
 	}
 
-	private onLoadProject(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {}
-	private onSaveProject(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {}
-	private onImportPac3(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {}
-	private onExportPac3(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {}
+	private onLoadProject(): void {}
+	private onSaveProject(): void {}
+	private onImportPac3(): void {}
+	private onExportPac3(): void {}
 
 	public render(): JSX.Element {
 		return (<div id="editor">
@@ -59,8 +72,8 @@ export default class Editor extends React.Component {
 				</div>
 				<h1>Zero Editor</h1>
 			</div>
-			<NodeMenuSelector />
-			<Graph />
+			<NodeMenuSelector editor={this} />
+			<Graph editor={this}/>
 		</div>);
 	}
 }

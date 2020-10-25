@@ -2,6 +2,7 @@ import React from "react";
 import "./grid.png";
 import "./Graph.css";
 import GraphControls from "./GraphControls";
+import Editor from "../Editor";
 
 const GRID_SIZE: number = 10000; // in px
 const GRID_SIZE_HALF: number = 5000; // in px
@@ -10,7 +11,11 @@ const ZOOM_MAX: number = 5;
 const ZOOM_MIN: number = 0.2;
 const MOVING_FREEDOM: number = 250; // in px
 
-export default class Graph extends React.Component {
+interface IGraphProperties {
+	editor: Editor;
+}
+
+export default class Graph extends React.Component<IGraphProperties> {
 	private currentZoom: number = 1;
 	private mouseDown: boolean = false;
 
@@ -18,6 +23,23 @@ export default class Graph extends React.Component {
 	private initialGrabY: number = 0;
 	private xOffset: number = 0;
 	private yOffset: number = 0;
+
+	constructor(props: IGraphProperties) {
+		super(props);
+		this.props.editor.graph = this;
+	}
+
+	public getCurrentZoom(): number {
+		return this.currentZoom;
+	}
+
+	public getXOffset(): number {
+		return this.xOffset;
+	}
+
+	public getYOffset(): number {
+		return this.yOffset;
+	}
 
 	private updateTransform(): void {
 		const graph: HTMLElement = document.getElementById("graph") as HTMLElement;
