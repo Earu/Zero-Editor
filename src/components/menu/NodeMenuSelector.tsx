@@ -32,8 +32,3 @@ export default class NodeMenuSelector extends React.Component<INodeMenuSelectorP
 		</div>);
 	}
 }
-
-// TODO:
-// NodeCategory: to categorize nodes in the menu
-// NodeItem: an item to create a specific UINode
-// UINode: the UI object that represents an instance of a node

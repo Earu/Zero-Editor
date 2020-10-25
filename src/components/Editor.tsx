@@ -1,22 +1,14 @@
-import { Guid } from "guid-typescript";
 import React from "react";
 import "./Editor.css";
 import NodeMenuSelector from "./menu/NodeMenuSelector";
 import Graph from "./graph/Graph";
-import Node from "../nodes/Node";
 
 export default class Editor extends React.Component {
-	private _nodeTable: Map<Guid, Node>;
 	private _graph: Graph | null;
 
 	constructor(props: any) {
 		super(props);
-		this._nodeTable = new Map<Guid, Node>();
 		this._graph = null;
-	}
-
-	public get nodeTable(): Map<Guid, Node> {
-		return this._nodeTable;
 	}
 
 	public get graph(): Graph | null {

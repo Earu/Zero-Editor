@@ -1,0 +1,26 @@
+.graph-node {
+	width: 100px;
+	height: 200px;
+	color: white;
+	box-shadow: 0px 0px 6px 0px #000000;
+}
+
+.graph-node>.header {
+	padding: 2px;
+	height: 21px;
+}
+
+.graph-node>.content {
+	background-color: rgba(0, 0, 0, 0.75);
+	height: 175px;
+}
+
+.graph-node>.header>div {
+	background: rgba(0, 0, 0, 0.3);
+	user-select: none;
+	font-size: 14px;
+	text-align: left;
+	padding-left: 6px;
+	padding-bottom: 2px;
+	padding-top: 2px;
+}

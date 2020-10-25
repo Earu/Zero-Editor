@@ -7,7 +7,6 @@ import Vector from "../../gmodTypes/Vector";
 import { AngleNode, ColorNode, NumberNode, ToggleNode, VectorNode } from "../../nodes/BasicNode";
 import Node from "../../nodes/Node";
 import Editor from "../Editor";
-import GraphNode from "../graph/GraphNode";
 import "./NodeMenuItem.css";
 
 interface INodeMenuItemProperties {
@@ -27,7 +26,6 @@ export default class NodeMenuItem extends React.Component<INodeMenuItemPropertie
 		dragParent.style.height = "25px";
 
 		ReactDOM.render(<NodeMenuItem name={this.props.name} color={this.props.color} editor={this.props.editor} />, dragParent);
-
 		return dragParent;
 	}
 
@@ -57,17 +55,12 @@ export default class NodeMenuItem extends React.Component<INodeMenuItemPropertie
 		// not implemented ?
 		if (node === null) return;
 
-		const graphElement: HTMLElement = document.getElementById("graph") as HTMLElement;
-		if (!graphElement) return;
-
+		// the graph can be null if its ran too early
 		const graph = this.props.editor.graph;
-		if (!graph) return;
+		if (graph == null) return;
 
-		this.props.editor.nodeTable.set(node.getId(), node);
-		// this will generate a warning by React in debug mode
-		// but React's solution is to call setState on our Graph component
-		// this would re-render the whole graph, and we do NOT want that
-		ReactDOM.render(<GraphNode graph={graph} node={node} x={pageX} y={pageY} />, graphElement);
+		node.computeCoordinates(graph, pageX, pageY);
+		graph.addNode(node);
 	}
 
 	private onMouseDown(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
