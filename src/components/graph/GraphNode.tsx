@@ -27,7 +27,7 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 		if (!this.mouseDown) return;
 
 		const x = this.props.node.getX(), y = this.props.node.getY()
-		this.props.node.setCoords(x + movementX, y + movementY);
+		this.props.node.setCoordinates(x + movementX, y + movementY);
 		this.props.graph.updateNodes();
 	}
 

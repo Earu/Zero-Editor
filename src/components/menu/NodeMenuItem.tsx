@@ -60,7 +60,7 @@ export default class NodeMenuItem extends React.Component<INodeMenuItemPropertie
 		if (graph == null) return;
 
 		const { x, y } = node.computeCoordinates(graph, pageX, pageY);
-		node.setCoords(x, y);
+		node.setCoordinates(x, y);
 		graph.addNode(node);
 	}
 
