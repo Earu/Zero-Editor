@@ -60,7 +60,7 @@ export default class Node implements INode {
 		};
 	}
 
-	public setCoords(x: number, y: number): void {
+	public setCoordinates(x: number, y: number): void {
 		this.x = x;
 		this.y = y;
 	}
