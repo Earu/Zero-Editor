@@ -17,6 +17,8 @@ interface INode {
 	fromJson(json: string): void;
 }
 
+type IPosition = { x: number; y: number };
+
 export default class Node implements INode {
 	private _editor: Editor;
 	private _id: Guid;
@@ -37,21 +39,34 @@ export default class Node implements INode {
 		this.color = color;
 	}
 
-	public computeCoordinates(graph: Graph, pageX: number, pageY: number): void {
+	public computeCoordinates(
+		graph: Graph,
+		pageX: number,
+		pageY: number
+	): IPosition {
 		const screenWidth: number = window.innerWidth;
 		const screenHeight: number = window.innerHeight;
 
 		const currentZoom: number = graph.getCurrentZoom();
-		const xOffset: number = (graph.getXOffset() / currentZoom) - ((screenWidth / 2) / currentZoom);
-		const yOffset: number = (graph.getYOffset() / currentZoom) - ((screenHeight / 2) / currentZoom);
+		const xOffset: number =
+			graph.getXOffset() / currentZoom - screenWidth / 2 / currentZoom;
+		const yOffset: number =
+			graph.getYOffset() / currentZoom - screenHeight / 2 / currentZoom;
 		const halfSize: number = graph.getSize() / 2;
 
-		this.x = (halfSize + xOffset) + (pageX / currentZoom);
-		this.y = (halfSize + yOffset) + (pageY / currentZoom);
+		return {
+			x: halfSize + xOffset + pageX / currentZoom,
+			y: halfSize + yOffset + pageY / currentZoom,
+		};
+	}
+
+	public setCoords(x: number, y: number): void {
+		this.x = x;
+		this.y = y;
 	}
 
 	public getId(): Guid {
-		return this._id
+		return this._id;
 	}
 
 	public setId(id: Guid): void {
