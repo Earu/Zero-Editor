@@ -9,7 +9,7 @@ import GraphNode from "./GraphNode";
 
 const GRID_SIZE: number = 10000; // in px
 const GRID_SIZE_HALF: number = 5000; // in px
-const ZOOM_COEF: number = 0.01;
+const ZOOM_COEF: number = 0.02;
 const ZOOM_MAX: number = 5;
 const ZOOM_MIN: number = 0.2;
 const MOVING_FREEDOM: number = 250; // in px
@@ -26,6 +26,7 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 	private currentZoom: number = 1;
 	private mouseDown: boolean = false;
 
+	private moveable: boolean = true;
 	private initialGrabX: number = 0;
 	private initialGrabY: number = 0;
 	private xOffset: number = 0;
@@ -75,7 +76,17 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 		inputZ.value = (this.currentZoom * 10).toFixed(2);
 	}
 
+	public set isMoveable(moveable: boolean) {
+		this.moveable = moveable;
+	}
+
+	public get isMoveable(): boolean {
+		return this.moveable;
+	}
+
 	public setTransform(xOffset: number | null = null, yOffset: number | null = null, scale: number | null = null) {
+		if (!this.moveable) return;
+
 		const scaleCoefTopLeft: number = (this.currentZoom * GRID_SIZE_HALF) + MOVING_FREEDOM;
 
 		if (xOffset != null) {
@@ -112,12 +123,24 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 	public addNode(node: Node): void {
 		this.nodeTable.set(node.getId(), node);
 		this.state.nodes.push(node);
-		this.setState({ nodes: this.state.nodes });
+		this.updateNodes();
+	}
+
+	public removeNode(id: Guid): void {
+		const nodes = this.state.nodes.filter(node => node.getId() !== id);
+		this.nodeTable.delete(id);
+
+		this.setState({ nodes });
 		this.updateTransform();
 	}
 
 	public getNode(id: Guid): Node | undefined {
 		return this.nodeTable.get(id);
+	}
+
+	public updateNodes(): void {
+		this.setState({ nodes: this.state.nodes });
+		this.updateTransform();
 	}
 
 	private onWheel(event: WheelEvent): void {
@@ -137,11 +160,13 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 	}
 
 	private getMouseX(event: MouseEvent): number {
-		return (window.Event) ? event.pageX : event.clientX + (document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft);
+		return (window.Event) ? event.pageX : event.clientX +
+			(document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft);
 	}
 
 	private getMouseY(event: MouseEvent): number {
-		return (window.Event) ? event.pageY : event.clientY + (document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop);
+		return (window.Event) ? event.pageY : event.clientY +
+			(document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop);
 	}
 
 	private onMouseDown(event: MouseEvent): void {
@@ -168,11 +193,11 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 	public componentDidMount(): void {
 		const graph: HTMLElement = document.getElementById("graph") as HTMLElement;
 		if (graph) {
-			graph.onwheel = this.onWheel.bind(this);
-			graph.onmousedown = this.onMouseDown.bind(this);
-			graph.onmouseup = this.onMouseUp.bind(this);
-			graph.onmouseleave = this.onMouseUp.bind(this);
-			graph.onmousemove = this.onMouseMove.bind(this);
+			graph.addEventListener("wheel", this.onWheel.bind(this));
+			graph.addEventListener("mousedown", this.onMouseDown.bind(this));
+			graph.addEventListener("mouseup", this.onMouseUp.bind(this));
+			graph.addEventListener("mouseleave", this.onMouseUp.bind(this));
+			graph.addEventListener("mousemove", this.onMouseMove.bind(this));
 		}
 	}
 

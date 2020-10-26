@@ -1,5 +1,4 @@
 .graph-node {
-	width: 100px;
 	height: 200px;
 	color: white;
 	box-shadow: 0px 0px 6px 0px #000000;
@@ -7,7 +6,16 @@
 
 .graph-node>.header {
 	padding: 2px;
-	height: 21px;
+}
+
+.graph-node>.header>button {
+	position: absolute;
+	top: 4px;
+	right: 4px;
+	background: none;
+	border: 1px solid transparent;
+	color: white;
+	font-weight: bolder;
 }
 
 .graph-node>.content {

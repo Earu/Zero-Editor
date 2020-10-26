@@ -2,12 +2,15 @@ import { Guid } from "guid-typescript";
 import Editor from "../components/Editor";
 import Graph from "../components/graph/Graph";
 
+const DEFAULT_NODE_WIDTH: number = 125;
+
 interface INode {
 	getId(): Guid;
 	setId(id: Guid): void;
 	getEditor(editor: Editor): void;
 	getX(): number;
 	getY(): number;
+	getWidth(): number;
 	getName(): string;
 	getColor(): string;
 	toJson(): string;
@@ -20,6 +23,7 @@ export default class Node implements INode {
 
 	private x: number;
 	private y: number;
+	private width: number;
 	private name: string;
 	private color: string;
 
@@ -28,6 +32,7 @@ export default class Node implements INode {
 		this._editor = editor;
 		this.x = 0;
 		this.y = 0;
+		this.width = DEFAULT_NODE_WIDTH;
 		this.name = name;
 		this.color = color;
 	}
@@ -63,6 +68,10 @@ export default class Node implements INode {
 
 	public getY(): number {
 		return this.y;
+	}
+
+	public getWidth(): number {
+		return this.width;
 	}
 
 	public getName(): string {
