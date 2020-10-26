@@ -59,7 +59,8 @@ export default class NodeMenuItem extends React.Component<INodeMenuItemPropertie
 		const graph = this.props.editor.graph;
 		if (graph == null) return;
 
-		node.computeCoordinates(graph, pageX, pageY);
+		const { x, y } = node.computeCoordinates(graph, pageX, pageY);
+		node.setCoords(x, y);
 		graph.addNode(node);
 	}
 
