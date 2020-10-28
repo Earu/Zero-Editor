@@ -1,10 +1,6 @@
 import { Guid } from "guid-typescript";
 import React from "react";
 import ReactDOM from "react-dom";
-import Angle from "../../gmodTypes/Angle";
-import Color from "../../gmodTypes/Color";
-import Vector from "../../gmodTypes/Vector";
-import { AngleNode, ColorNode, NumberNode, ToggleNode, VectorNode } from "../../nodes/BasicNode";
 import Node from "../../nodes/Node";
 import Editor from "../Editor";
 import "./NodeMenuItem.css";
@@ -30,27 +26,7 @@ export default class NodeMenuItem extends React.Component<INodeMenuItemPropertie
 	}
 
 	private onItemDropped(pageX: number, pageY: number): void {
-		let node: Node | null;
-		switch (this.props.name) {
-			case "Number":
-				node = new NumberNode(this.props.editor, 0);
-				break;
-			case "Toggle":
-				node = new ToggleNode(this.props.editor, false);
-				break;
-			case "Angle":
-				node = new AngleNode(this.props.editor, new Angle(0, 0, 0));
-				break;
-			case "Vector":
-				node = new VectorNode(this.props.editor, new Vector(0, 0, 0));
-				break;
-			case "Color":
-				node = new ColorNode(this.props.editor, new Color(255, 255, 255, 255));
-				break;
-			default:
-				node = null;
-				break;
-		}
+		const node: Node | null = this.props.editor.factory.CreateNode(this.props.name);
 
 		// not implemented ?
 		if (node === null) return;

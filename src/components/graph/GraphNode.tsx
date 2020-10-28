@@ -2,6 +2,7 @@ import React from "react";
 import Node from "../../nodes/Node";
 import Graph from "./Graph";
 import "./GraphNode.css";
+import { GraphNodeAngleProperty, GraphNodeBooleanProperty, GraphNodeColorProperty, GraphNodeNumberProperty, GraphNodeVectorProperty } from "./GraphNodeProperties";
 
 interface IGraphNodeProperties {
 	graph: Graph;
@@ -49,28 +50,56 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 		}
 	}
 
+	private renderProperties(): Array<JSX.Element> {
+		const elements: Array<JSX.Element> = [];
+		for (const [propertyName, propertyValue] of this.props.node.properties.entries()) {
+			const elementId: string = `${this.props.node.getId()}_${propertyName}`;
+			switch (propertyValue.constructor.name) {
+				case "Boolean":
+					elements.push(<GraphNodeBooleanProperty id={elementId} key={elementId} name={propertyName} value={propertyValue}/>);
+					break;
+				case "Number":
+					elements.push(<GraphNodeNumberProperty id={elementId} key={elementId} name={propertyName} value={propertyValue}/>);
+					break;
+				case "Vector":
+					elements.push(<GraphNodeVectorProperty id={elementId} key={elementId} name={propertyName} value={propertyValue}/>);
+					break
+				case "Angle":
+					elements.push(<GraphNodeAngleProperty id={elementId} key={elementId} name={propertyName} value={propertyValue}/>);
+					break;
+				case "Color":
+					elements.push(<GraphNodeColorProperty id={elementId} key={elementId} name={propertyName} value={propertyValue}/>);
+					break;
+				default:
+					break;
+			}
+
+			//elements.push(<input key={propertyName}  placeholder={propertyName} value={propertyValue} />);
+		}
+
+		return elements;
+	}
+
 	public render(): JSX.Element {
-		return (<div className="graph-node"
-			style={{
-				position: "absolute",
-				left: this.props.node.getX(),
-				top: this.props.node.getY(),
-				width: this.props.node.getWidth(),
-			}}>
-				<div
-					style={{
+		return (<div className="graph-node" style={{
+					position: "absolute",
+					left: this.props.node.getX(),
+					top: this.props.node.getY(),
+					width: this.props.node.getWidth()}}>
+				<div style={{
 						backgroundImage: `linear-gradient(to right, ${this.props.node.getColor()}, #111)`,
 						height: NODE_HEADER_HEIGHT,
 						cursor: "move"
 					}}
 					onMouseDown={this.onMouseDown.bind(this)}
 					onMouseUp={this.onMouseUp.bind(this)}
-					className="header"
-				>
+					className="header">
 					<div>{this.props.node.getName()}</div>
 					<button onClick={this.onClose.bind(this)}>x</button>
 				</div>
-			<div className="content"></div>
+			<div className="content">
+				{this.renderProperties()}
+			</div>
 		</div>);
 	}
 }

@@ -26,4 +26,8 @@ export default class Color {
 	public get alpha(): number {
 		return this._alpha;
 	}
+
+	public toString(): string {
+		return `Color [ r: ${this._red} g: ${this._green} b: ${this._blue} ]`;
+	}
 }

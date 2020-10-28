@@ -13,11 +13,13 @@ interface INode {
 	getWidth(): number;
 	getName(): string;
 	getColor(): string;
-	toJson(): string;
-	fromJson(json: string): void;
+	properties: Map<string, any>;
 }
 
-type IPosition = { x: number; y: number };
+interface IPosition {
+	x: number;
+	y: number
+}
 
 export default class Node implements INode {
 	private _editor: Editor;
@@ -28,6 +30,7 @@ export default class Node implements INode {
 	private width: number;
 	private name: string;
 	private color: string;
+	private _properties: Map<string, any>;
 
 	constructor(editor: Editor, name: string, color: string) {
 		this._id = Guid.create();
@@ -37,21 +40,23 @@ export default class Node implements INode {
 		this.width = DEFAULT_NODE_WIDTH;
 		this.name = name;
 		this.color = color;
+
+		this._properties = new Map<string, any>();
+		this._properties.set("enabled", true);
+		this._properties.set("nsfw", false);
 	}
 
-	public computeCoordinates(
-		graph: Graph,
-		pageX: number,
-		pageY: number
-	): IPosition {
+	public get properties(): Map<string, any> {
+		return this._properties;
+	}
+
+	public computeCoordinates(graph: Graph, pageX: number, pageY: number): IPosition {
 		const screenWidth: number = window.innerWidth;
 		const screenHeight: number = window.innerHeight;
 
 		const currentZoom: number = graph.getCurrentZoom();
-		const xOffset: number =
-			graph.getXOffset() / currentZoom - screenWidth / 2 / currentZoom;
-		const yOffset: number =
-			graph.getYOffset() / currentZoom - screenHeight / 2 / currentZoom;
+		const xOffset: number = graph.getXOffset() / currentZoom - screenWidth / 2 / currentZoom;
+		const yOffset: number = graph.getYOffset() / currentZoom - screenHeight / 2 / currentZoom;
 		const halfSize: number = graph.getSize() / 2;
 
 		return {
@@ -95,16 +100,5 @@ export default class Node implements INode {
 
 	public getColor(): string {
 		return this.color;
-	}
-
-	public toJson(): string {
-		return JSON.stringify({
-			id: this._id,
-		});
-	}
-
-	public fromJson(json: string): void {
-		const jsonObj = JSON.parse(json);
-		this._id = jsonObj.id;
 	}
 }

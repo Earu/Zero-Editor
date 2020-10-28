@@ -20,4 +20,8 @@ export default class Vector {
 	public get z(): number {
 		return this._z;
 	}
+
+	public toString(): string {
+		return `Vector [ x: ${this._x} y: ${this._y} z: ${this._z} ]`;
+	}
 }

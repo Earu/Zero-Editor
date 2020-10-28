@@ -2,13 +2,20 @@ import React from "react";
 import "./Editor.css";
 import NodeMenuSelector from "./menu/NodeMenuSelector";
 import Graph from "./graph/Graph";
+import NodeFactory from "../nodes/NodeFactory";
 
 export default class Editor extends React.Component {
 	private _graph: Graph | null;
+	private _factory: NodeFactory;
 
 	constructor(props: any) {
 		super(props);
 		this._graph = null;
+		this._factory = new NodeFactory(this);
+	}
+
+	public get factory(): NodeFactory {
+		return this._factory;
 	}
 
 	public get graph(): Graph | null {

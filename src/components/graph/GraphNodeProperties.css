@@ -1,0 +1,23 @@
+.graph-node-property {
+	border-bottom: 1px solid #242424;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	font-size: 12px;
+	vertical-align: middle;
+}
+
+.graph-node-property-checkbox-label {
+	position: relative;
+	top: -2px;
+	left: 2px;
+}
+
+.graph-node-property-text-input {
+	background-color: rgba(0, 0, 0, 0.75);
+	border: solid 2px rgba(0, 0, 0, 0.75);
+	color: white;
+}
+
+.graph-node-property-text-input:focus {
+	border: solid 2px #494949;
+}
