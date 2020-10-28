@@ -5,32 +5,17 @@ import Vector from "../gmodTypes/Vector";
 import Node from "./Node";
 
 class BasicNode<T> extends Node {
-	private _value: T;
-
 	constructor(editor: Editor, name: string, color: string, value: T) {
 		super(editor, name, color);
-		this._value = value;
+		this.properties.set("value", value);
 	}
 
 	public get value(): T {
-		return this._value;
+		return this.properties.get("value") as T;
 	}
 
 	public set value(value: T) {
-		this._value = value;
-	}
-
-	public fromJson(json: string): void {
-		const jsonObj = JSON.parse(json);
-		this.setId(jsonObj.id);
-		this._value = jsonObj.value;
-	}
-
-	public toJson(): string {
-		return JSON.stringify({
-			id: super.getId(),
-			value: this._value,
-		});
+		this.properties.set("value", value);
 	}
 }
 

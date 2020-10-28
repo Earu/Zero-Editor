@@ -21,4 +21,7 @@ export default class Angle {
 		return this._yaw;
 	}
 
+	public toString(): string {
+		return `Angle [ roll: ${this._roll} pitch: ${this._pitch} yaw: ${this.yaw} ]`;
+	}
 }
