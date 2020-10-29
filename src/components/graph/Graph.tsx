@@ -6,6 +6,7 @@ import Editor from "../Editor";
 import { Guid } from "guid-typescript";
 import Node from "../../nodes/Node";
 import GraphNode from "./GraphNode";
+import IPosition from "./IPosition";
 
 const GRID_SIZE: number = 10000; // in px
 const GRID_SIZE_HALF: number = 5000; // in px
@@ -22,11 +23,6 @@ interface IGraphState {
 	nodes: Array<Node>;
 }
 
-interface IPosition {
-	x: number;
-	y: number
-}
-
 export default class Graph extends React.Component<IGraphProperties, IGraphState> {
 	private currentZoom: number = 1;
 	private mouseDown: boolean = false;
@@ -38,7 +34,7 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 	private yOffset: number = 0;
 
 	private nodeTable: Map<Guid, Node>;
-	private selectedGraphNode?: GraphNode;
+	private selectedGraphNode: GraphNode | null = null;
 
 	constructor(props: IGraphProperties) {
 		super(props);
@@ -63,11 +59,11 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 		return GRID_SIZE;
 	}
 
-	public setSelectedGraphNode(node: GraphNode | undefined): void {
+	public setSelectedGraphNode(node: GraphNode | null): void {
 		this.selectedGraphNode = node;
 	}
 
-	public getSelectedGraphNode(): GraphNode | undefined {
+	public getSelectedGraphNode(): GraphNode | null {
 		return this.selectedGraphNode;
 	}
 
@@ -227,7 +223,7 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 
 	private onMouseUp(): void {
 		this.mouseDown = false;
-		this.selectedGraphNode = undefined;
+		this.selectedGraphNode = null;
 		document.body.style.cursor = "auto";
 	}
 
