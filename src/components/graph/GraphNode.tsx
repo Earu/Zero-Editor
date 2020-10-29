@@ -9,11 +9,6 @@ interface IGraphNodeProperties {
 	node: Node;
 }
 
-interface IPosition {
-	x: number;
-	y: number
-}
-
 const NODE_HEADER_HEIGHT: number = 21;
 
 export default class GraphNode extends React.Component<IGraphNodeProperties> {
