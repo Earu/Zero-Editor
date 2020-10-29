@@ -55,8 +55,8 @@ export default class Node implements INode {
 		const screenHeight: number = window.innerHeight;
 
 		const currentZoom: number = graph.getCurrentZoom();
-		const xOffset: number = graph.getXOffset() / currentZoom - screenWidth / 2 / currentZoom;
-		const yOffset: number = graph.getYOffset() / currentZoom - screenHeight / 2 / currentZoom;
+		const xOffset: number = (graph.getXOffset() - screenWidth / 2) / currentZoom;
+		const yOffset: number = (graph.getYOffset() - screenHeight / 2) / currentZoom;
 		const halfSize: number = graph.getSize() / 2;
 
 		return {
