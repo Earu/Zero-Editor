@@ -6,6 +6,7 @@ import Editor from "../Editor";
 import { Guid } from "guid-typescript";
 import Node from "../../nodes/Node";
 import GraphNode from "./GraphNode";
+import IPosition from "./IPosition";
 
 const GRID_SIZE: number = 10000; // in px
 const GRID_SIZE_HALF: number = 5000; // in px
@@ -33,6 +34,7 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 	private yOffset: number = 0;
 
 	private nodeTable: Map<Guid, Node>;
+	private selectedGraphNode: GraphNode | null = null;
 
 	constructor(props: IGraphProperties) {
 		super(props);
@@ -55,6 +57,44 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 
 	public getSize(): number {
 		return GRID_SIZE;
+	}
+
+	public setSelectedGraphNode(node: GraphNode | null): void {
+		this.selectedGraphNode = node;
+	}
+
+	public getSelectedGraphNode(): GraphNode | null {
+		return this.selectedGraphNode;
+	}
+
+	public pageToGraphCoordinates(x: number, y: number): IPosition {
+		const screenWidth: number = window.innerWidth;
+		const screenHeight: number = window.innerHeight;
+
+		const currentZoom: number = this.getCurrentZoom();
+		const xOffset: number = (this.getXOffset() - screenWidth / 2) / currentZoom;
+		const yOffset: number = (this.getYOffset() - screenHeight / 2) / currentZoom;
+		const halfSize: number = this.getSize() / 2;
+
+		return {
+			x: halfSize + xOffset + x / currentZoom,
+			y: halfSize + yOffset + y / currentZoom,
+		};
+	}
+
+	public graphToPageCoordinates(x: number, y: number): IPosition {
+		const screenWidth: number = window.innerWidth;
+		const screenHeight: number = window.innerHeight;
+
+		const currentZoom: number = this.getCurrentZoom();
+		const xOffset: number = (this.getXOffset() - screenWidth / 2) / currentZoom;
+		const yOffset: number = (this.getYOffset() - screenHeight / 2) / currentZoom;
+		const halfSize: number = this.getSize() / 2;
+
+		return {
+			x: (x - halfSize - xOffset) * currentZoom,
+			y: (y - halfSize - yOffset) * currentZoom,
+		};
 	}
 
 	private updateTransform(): void {
@@ -157,6 +197,10 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 		this.currentZoom = this.currentZoom <= ZOOM_MIN ? ZOOM_MIN : this.currentZoom;
 
 		this.updateTransform();
+
+		if (this.selectedGraphNode) {
+			this.selectedGraphNode.updatePosition(event);
+		}
 	}
 
 	private getMouseX(event: MouseEvent): number {
@@ -179,6 +223,7 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 
 	private onMouseUp(): void {
 		this.mouseDown = false;
+		this.selectedGraphNode = null;
 		document.body.style.cursor = "auto";
 	}
 
