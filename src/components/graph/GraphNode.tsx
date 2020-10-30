@@ -12,28 +12,40 @@ interface IGraphNodeProperties {
 const NODE_HEADER_HEIGHT: number = 21;
 
 export default class GraphNode extends React.Component<IGraphNodeProperties> {
-	private mouseDown: boolean = false;
 
-	private onMouseDown(): void {
-		this.props.graph.isMoveable = false;
-		this.mouseDown = true;
-	}
+	private offsetX: number = 0;
+	private offsetY: number = 0;
+	private offsetZoom: number = 0;
 
-	private onMouseUp(): void {
-		this.mouseDown = false;
-		this.props.graph.isMoveable = true;
-	}
-
-	private onMouseMove({ movementX, movementY }: MouseEvent): void {
-		if (!this.mouseDown) return;
+	private onMouseDown(event: React.MouseEvent): void {
 
 		const x = this.props.node.getX(), y = this.props.node.getY()
-		this.props.node.setCoordinates(x + movementX, y + movementY);
-		this.props.graph.updateNodes();
+		const screenPos = this.props.graph.graphToPageCoordinates(x, y);
+		const zoom = this.props.graph.getCurrentZoom();
+		this.offsetX = event.pageX - screenPos.x;
+		this.offsetY = event.pageY - screenPos.y;
+		this.offsetZoom = zoom;
+
+		this.props.graph.setSelectedGraphNode(this);
+		this.props.graph.isMoveable = false;
+	}
+
+	private onMouseMove(event: MouseEvent): void {
+		if (this.props.graph.getSelectedGraphNode() !== this) return;
+
+		this.updatePosition(event);
 	}
 
 	private onClose(): void {
 		this.props.graph.removeNode(this.props.node.getId());
+	}
+
+	public updatePosition(event: MouseEvent): void {
+		const zoom = 1 + (this.props.graph.getCurrentZoom() - this.offsetZoom) / this.offsetZoom;
+		const graphPos = this.props.graph.pageToGraphCoordinates(event.pageX - this.offsetX * zoom, event.pageY - this.offsetY * zoom);
+
+		this.props.node.setCoordinates(graphPos.x, graphPos.y);
+		this.props.graph.updateNodes();
 	}
 
 	public componentDidMount(): void {
@@ -92,7 +104,6 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 						cursor: "move"
 					}}
 					onMouseDown={this.onMouseDown.bind(this)}
-					onMouseUp={this.onMouseUp.bind(this)}
 					className="header">
 					<div>{this.props.node.getName()}</div>
 					<button onClick={this.onClose.bind(this)}>x</button>

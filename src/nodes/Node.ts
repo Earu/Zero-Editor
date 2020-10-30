@@ -1,6 +1,5 @@
 import { Guid } from "guid-typescript";
 import Editor from "../components/Editor";
-import Graph from "../components/graph/Graph";
 
 const DEFAULT_NODE_WIDTH: number = 125;
 
@@ -14,11 +13,6 @@ interface INode {
 	getName(): string;
 	getColor(): string;
 	properties: Map<string, any>;
-}
-
-interface IPosition {
-	x: number;
-	y: number
 }
 
 export default class Node implements INode {
@@ -48,21 +42,6 @@ export default class Node implements INode {
 
 	public get properties(): Map<string, any> {
 		return this._properties;
-	}
-
-	public computeCoordinates(graph: Graph, pageX: number, pageY: number): IPosition {
-		const screenWidth: number = window.innerWidth;
-		const screenHeight: number = window.innerHeight;
-
-		const currentZoom: number = graph.getCurrentZoom();
-		const xOffset: number = graph.getXOffset() / currentZoom - screenWidth / 2 / currentZoom;
-		const yOffset: number = graph.getYOffset() / currentZoom - screenHeight / 2 / currentZoom;
-		const halfSize: number = graph.getSize() / 2;
-
-		return {
-			x: halfSize + xOffset + pageX / currentZoom,
-			y: halfSize + yOffset + pageY / currentZoom,
-		};
 	}
 
 	public setCoordinates(x: number, y: number): void {
