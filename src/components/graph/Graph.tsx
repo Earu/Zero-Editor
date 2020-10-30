@@ -223,7 +223,6 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 
 	private onMouseUp(): void {
 		this.mouseDown = false;
-		this.selectedGraphNode = null;
 		document.body.style.cursor = "auto";
 	}
 
