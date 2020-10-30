@@ -12,13 +12,11 @@ interface IGraphNodeProperties {
 const NODE_HEADER_HEIGHT: number = 21;
 
 export default class GraphNode extends React.Component<IGraphNodeProperties> {
-
 	private offsetX: number = 0;
 	private offsetY: number = 0;
 	private offsetZoom: number = 0;
 
 	private onMouseDown(event: React.MouseEvent): void {
-
 		const x = this.props.node.getX(), y = this.props.node.getY()
 		const screenPos = this.props.graph.graphToPageCoordinates(x, y);
 		const zoom = this.props.graph.getCurrentZoom();
@@ -28,6 +26,13 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 
 		this.props.graph.setSelectedGraphNode(this);
 		this.props.graph.isMoveable = false;
+	}
+
+	private onMouseUp(): void {
+		if (this.props.graph.getSelectedGraphNode() !== this) return;
+
+		this.props.graph.setSelectedGraphNode(null);
+		this.props.graph.isMoveable = true;
 	}
 
 	private onMouseMove(event: MouseEvent): void {
@@ -104,6 +109,7 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 						cursor: "move"
 					}}
 					onMouseDown={this.onMouseDown.bind(this)}
+					onMouseUp={this.onMouseUp.bind(this)}
 					className="header">
 					<div>{this.props.node.getName()}</div>
 					<button onClick={this.onClose.bind(this)}>x</button>
