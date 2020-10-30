@@ -70,7 +70,8 @@ export default class NodeMenuItem extends React.Component<INodeMenuItemPropertie
 		}
 
 		const stopMultiDrop = (event: KeyboardEvent) => {
-			if (!event.shiftKey) {
+			// multiple checks because chromium is being dumb
+			if (!event.shiftKey || event.key === "Shift" || event.which === 16) {
 				document.removeEventListener("keyup", stopMultiDrop);
 
 				dragItem.onmouseup = null;
