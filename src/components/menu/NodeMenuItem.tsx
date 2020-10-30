@@ -55,21 +55,31 @@ export default class NodeMenuItem extends React.Component<INodeMenuItemPropertie
 			moveAt(event.pageX, event.pageY);
 		}
 
-		// this is because sometimes the browser likes to call this event so fast
-		// that it creates two nodes instead of one
-		let dropped = false;
 		const stopMove = (stopEvent: MouseEvent) => {
-			if (dropped) return;
+			if (stopEvent.shiftKey) {
+				// multi drops
+				this.onItemDropped(stopEvent.pageX, stopEvent.pageY);
+				return;
+			}
 
 			document.removeEventListener("mousemove", onMouseMove);
 
 			dragItem.onmouseup = null;
 			dragItem.remove();
 			this.onItemDropped(stopEvent.pageX, stopEvent.pageY);
-			dropped = true;
+		}
+
+		const stopMultiDrop = (event: KeyboardEvent) => {
+			if (!event.shiftKey) {
+				document.removeEventListener("keyup", stopMultiDrop);
+
+				dragItem.onmouseup = null;
+				dragItem.remove();
+			}
 		}
 
 		document.addEventListener("mousemove", onMouseMove);
+		document.addEventListener("keyup", stopMultiDrop);
 		dragItem.onmouseup = stopMove;
 
 		// a hack so the drag n drop doesn't die when the user leaves the editor
@@ -87,10 +97,8 @@ export default class NodeMenuItem extends React.Component<INodeMenuItemPropertie
 	}
 
 	public render(): JSX.Element {
-		return (<div className="node-menu-item"
-			onMouseDown={this.onMouseDown.bind(this)}
-			style={{ backgroundImage: `linear-gradient(to right, ${this.props.color}, #111)` }}>
-			<div>{this.props.name}</div>
+		return (<div className="node-menu-item" style={{ backgroundImage: `linear-gradient(to right, ${this.props.color}, #111)` }}>
+			<div onMouseDown={this.onMouseDown.bind(this)}>{this.props.name}</div>
 		</div>);
 	}
 }
