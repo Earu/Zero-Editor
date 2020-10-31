@@ -1,4 +1,4 @@
-import Node from "./Node";
+import { Node } from "./Node";
 import { AngleNode, ChoiceNode, ColorNode, InputNode, MaterialNode, ModelNode, NumberNode, ToggleNode, VectorNode } from "./BasicNode";
 
 export default class EntityNode extends Node {

@@ -3,81 +3,142 @@ import Editor from "../components/Editor";
 
 const DEFAULT_NODE_WIDTH: number = 125;
 
-interface INode {
-	getId(): Guid;
-	setId(id: Guid): void;
-	getEditor(editor: Editor): void;
-	getX(): number;
-	getY(): number;
-	getWidth(): number;
-	getName(): string;
-	getColor(): string;
-	properties: Map<string, any>;
+export class NodeOutput<T> {
+	private _typeName: string;
+	private _value: T;
+
+	constructor(defaultValue: T, typeName: string) {
+		this._typeName = typeName;
+		this._value = defaultValue;
+	}
+
+	public get typeName(): string {
+		return this._typeName;
+	}
+
+	public set value(value: T) {
+		this._value = value;
+	}
+
+	public get value(): T {
+		return this._value;
+	}
 }
 
-export default class Node implements INode {
+export class NodeProperty<T> {
+	private staticValue: T;
+	private linkedOutput: NodeOutput<T>| null;
+	private _typeName: string;
+
+	constructor(defaultValue: T, typeName: string) {
+		this.linkedOutput = null;
+		this.staticValue = defaultValue;
+		this._typeName = typeName;
+	}
+
+	public get typeName(): string {
+		return this._typeName;
+	}
+
+	public setStaticValue(value: T): void {
+		this.staticValue = value;
+	}
+
+	public trySetLinkedOutput(output: NodeOutput<T>): boolean {
+		if (output.typeName === this.typeName) {
+			this.linkedOutput = output;
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public getValue(): T {
+		if (!this.linkedOutput) return this.staticValue;
+		return this.linkedOutput.value;
+	}
+}
+
+export class Node {
 	private _editor: Editor;
 	private _id: Guid;
 
-	private x: number;
-	private y: number;
-	private width: number;
-	private name: string;
-	private color: string;
-	private _properties: Map<string, any>;
+	private _x: number;
+	private _y: number;
+	private _width: number;
+	private _name: string;
+	private _color: string;
+	private _properties: Map<string, NodeProperty<any>>;
+	private _outputs: Map<string, NodeOutput<any>>;
 
 	constructor(editor: Editor, name: string, color: string) {
 		this._id = Guid.create();
 		this._editor = editor;
-		this.x = 0;
-		this.y = 0;
-		this.width = DEFAULT_NODE_WIDTH;
-		this.name = name;
-		this.color = color;
-
-		this._properties = new Map<string, any>();
-		this._properties.set("enabled", true);
-		this._properties.set("nsfw", false);
+		this._x = 0;
+		this._y = 0;
+		this._width = DEFAULT_NODE_WIDTH;
+		this._name = name;
+		this._color = color;
+		this._properties = new Map<string, NodeProperty<any>>();
+		this._outputs = new Map<string, NodeOutput<any>>();
 	}
 
-	public get properties(): Map<string, any> {
+	public get properties(): Map<string, NodeProperty<any>> {
 		return this._properties;
 	}
 
-	public setCoordinates(x: number, y: number): void {
-		this.x = x;
-		this.y = y;
+	public get outputs(): Map<string, NodeOutput<any>> {
+		return this._outputs;
 	}
 
-	public getId(): Guid {
+	public get hasOutput(): boolean {
+		return this._outputs.size > 0;
+	}
+
+	public updateOutputs(): void {}
+
+	public getProperty<T>(name: string): NodeProperty<T> | null {
+		const property = this._properties.get(name);
+		if (property === null) return null;
+
+		return property as NodeProperty<T>;
+	}
+
+	public setCoordinates(x: number, y: number): void {
+		this._x = x;
+		this._y = y;
+	}
+
+	public get id(): Guid {
 		return this._id;
 	}
 
-	public setId(id: Guid): void {
+	public set id(id: Guid) {
 		this._id = id;
 	}
 
-	public getEditor(): Editor {
+	public get editor(): Editor {
 		return this._editor;
 	}
 
-	public getX(): number {
-		return this.x;
+	public get x(): number {
+		return this._x;
 	}
 
-	public getY(): number {
-		return this.y;
+	public get y(): number {
+		return this._y;
 	}
 
-	public getWidth(): number {
-		return this.width;
+	public get width(): number {
+		return this._width;
 	}
 
-	public getName(): string {
-		return this.name;
+	public get name(): string {
+		return this._name;
 	}
 
-	public getColor(): string {
-		return this.color;
+	public get color(): string {
+		return this._color;
 	}
 }

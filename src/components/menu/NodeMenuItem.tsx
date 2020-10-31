@@ -1,7 +1,7 @@
 import { Guid } from "guid-typescript";
 import React from "react";
 import ReactDOM from "react-dom";
-import Node from "../../nodes/Node";
+import { Node } from "../../nodes/Node";
 import Editor from "../Editor";
 import "./NodeMenuItem.css";
 
@@ -25,7 +25,7 @@ export default class NodeMenuItem extends React.Component<INodeMenuItemPropertie
 	}
 
 	private onItemDropped(pageX: number, pageY: number): void {
-		const node: Node | null = this.props.editor.factory.CreateNode(this.props.name);
+		const node: Node | null = this.props.editor.factory.createNode(this.props.name);
 
 		// not implemented ?
 		if (node === null) return;
@@ -98,7 +98,7 @@ export default class NodeMenuItem extends React.Component<INodeMenuItemPropertie
 	}
 
 	public render(): JSX.Element {
-		const color: string = this.props.editor.factory.GetNodeColor(this.props.name);
+		const color: string = this.props.editor.factory.getNodeColor(this.props.name);
 		return (<div className="node-menu-item" style={{ backgroundImage: `linear-gradient(to right, ${color}, #111)` }}>
 			<div onMouseDown={this.onMouseDown.bind(this)}>{this.props.name}</div>
 		</div>);
