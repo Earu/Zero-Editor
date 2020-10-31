@@ -7,7 +7,6 @@ import "./NodeMenuItem.css";
 
 interface INodeMenuItemProperties {
 	name: string;
-	color: string;
 	editor: Editor;
 }
 
@@ -21,7 +20,7 @@ export default class NodeMenuItem extends React.Component<INodeMenuItemPropertie
 		dragParent.style.width = "100px";
 		dragParent.style.height = "25px";
 
-		ReactDOM.render(<NodeMenuItem name={this.props.name} color={this.props.color} editor={this.props.editor} />, dragParent);
+		ReactDOM.render(<NodeMenuItem name={this.props.name} editor={this.props.editor} />, dragParent);
 		return dragParent;
 	}
 
@@ -98,7 +97,8 @@ export default class NodeMenuItem extends React.Component<INodeMenuItemPropertie
 	}
 
 	public render(): JSX.Element {
-		return (<div className="node-menu-item" style={{ backgroundImage: `linear-gradient(to right, ${this.props.color}, #111)` }}>
+		const color: string = this.props.editor.factory.GetNodeColor(this.props.name);
+		return (<div className="node-menu-item" style={{ backgroundImage: `linear-gradient(to right, ${color}, #111)` }}>
 			<div onMouseDown={this.onMouseDown.bind(this)}>{this.props.name}</div>
 		</div>);
 	}

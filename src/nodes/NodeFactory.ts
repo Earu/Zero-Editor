@@ -37,4 +37,21 @@ export default class NodeFactory {
 
 		return node as unknown as T;
 	}
+
+	public GetNodeColor(nodeName: string): string {
+		switch (nodeName) {
+			case "Number":
+				return "#bc316d"; // red
+			case "Toggle":
+				return "#31bc87"; // green
+			case "Vector":
+				return "#3151bc"; // blue
+			case "Angle":
+				return "#5831bc"; // purple
+			case "Color":
+				return "#bc31ba"; // pink
+			default:
+				return "#8e8e8e"; // gray
+		}
+	}
 }
