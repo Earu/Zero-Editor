@@ -3,7 +3,7 @@ import Angle from "../gmodTypes/Angle";
 import Color from "../gmodTypes/Color";
 import Vector from "../gmodTypes/Vector";
 import { AngleNode, ColorNode, NumberNode, ToggleNode, VectorNode } from "./BasicNode";
-import Node from "./Node";
+import { Node } from "./Node";
 
 export default class NodeFactory {
 	private editor: Editor;
@@ -12,7 +12,7 @@ export default class NodeFactory {
 		this.editor = editor;
 	}
 
-	public CreateNode<T>(name: string): T | null {
+	public createNode<T>(name: string): T | null {
 		let node: Node | null;
 		switch (name) {
 			case "Number":
@@ -38,7 +38,7 @@ export default class NodeFactory {
 		return node as unknown as T;
 	}
 
-	public GetNodeColor(nodeName: string): string {
+	public getNodeColor(nodeName: string): string {
 		switch (nodeName) {
 			case "Number":
 				return "#bc316d"; // red
