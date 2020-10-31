@@ -89,7 +89,8 @@ export default class NodeMenuItem extends React.Component<INodeMenuItemPropertie
 			if ((mouseY >= 0 && mouseY <= window.innerHeight) && (mouseX >= 0 && mouseX <= window.innerWidth))
 				return;
 
-			stopMove(event);
+			dragItem.onmouseup = null;
+			dragItem.remove();
 			document.removeEventListener("mouseout", onMouseOut)
 		}
 
