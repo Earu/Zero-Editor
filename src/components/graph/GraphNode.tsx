@@ -69,8 +69,13 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 
 	private renderProperties(): Array<JSX.Element> {
 		const elements: Array<JSX.Element> = [];
+
+		console.debug(this.props.node.properties);
 		for (const [propertyName, propertyValue] of this.props.node.properties.entries()) {
 			const elementId: string = `${this.props.node.getId()}_${propertyName}`;
+
+			console.debug(propertyValue.constructor.name);
+
 			switch (propertyValue.constructor.name) {
 				case "Boolean":
 					elements.push(<GraphNodeBooleanProperty id={elementId} key={elementId} name={propertyName} value={propertyValue}/>);
