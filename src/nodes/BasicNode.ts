@@ -5,8 +5,8 @@ import Vector from "../gmodTypes/Vector";
 import Node from "./Node";
 
 class BasicNode<T> extends Node {
-	constructor(editor: Editor, name: string, color: string, value: T) {
-		super(editor, name, color);
+	constructor(editor: Editor, name: string, value: T) {
+		super(editor, name, editor.factory.GetNodeColor(name));
 		this.properties.set("value", value);
 	}
 
@@ -21,31 +21,31 @@ class BasicNode<T> extends Node {
 
 export class VectorNode extends BasicNode<Vector> {
 	constructor(editor: Editor, value: Vector) {
-		super (editor, "Vector", "#3151bc", value);
+		super (editor, "Vector", value);
 	}
 }
 
 export class AngleNode extends BasicNode<Angle>{
 	constructor(editor: Editor, value: Angle) {
-		super (editor, "Angle", "#5831bc", value);
+		super (editor, "Angle", value);
 	}
 }
 
 export class ToggleNode extends BasicNode<boolean> {
 	constructor(editor: Editor, value: boolean) {
-		super (editor, "Toggle", "#31bc87", value);
+		super (editor, "Toggle", value);
 	}
 }
 
 export class NumberNode extends BasicNode<number> {
 	constructor(editor: Editor, value: number) {
-		super (editor, "Number", "#bc316d", value);
+		super (editor, "Number", value);
 	}
 }
 
 export class ColorNode extends BasicNode<Color> {
 	constructor(editor: Editor, value: Color) {
-		super (editor, "Color", "#bc31ba", value);
+		super (editor, "Color", value);
 	}
 }
 
