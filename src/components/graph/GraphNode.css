@@ -1,7 +1,6 @@
 .graph-node {
 	color: white;
 	box-shadow: 0px 0px 6px 0px #000000;
-	overflow: hidden;
 }
 
 .graph-node>.header {

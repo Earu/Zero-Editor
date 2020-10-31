@@ -1,0 +1,27 @@
+.graph-node-output {
+	text-align: right;
+}
+
+.graph-node-output>.user-selection {
+	background-color: gray;
+	border: 2px solid #494949;
+	border-radius: 100%;
+	width: 10px;
+	height: 10px;
+	float: right;
+	position: relative;
+	right: -10px;
+	top: 4px;
+	margin: 0;
+	padding: 0;
+}
+
+.graph-node-output>span {
+	font-size: 12px;
+}
+
+.graph-node-output>.user-selection:hover {
+	background-color: #eeeeee;
+	border: 2px solid #aaaaaa;
+	transform: scale(1.1);
+}
