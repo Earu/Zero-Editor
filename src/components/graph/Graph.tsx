@@ -7,6 +7,8 @@ import { Guid } from "guid-typescript";
 import { Node } from "../../nodes/Node";
 import GraphNode from "./GraphNode";
 import IPosition from "./IPosition";
+import { BaseGraphNodeProperty } from "./GraphNodeProperties";
+import GraphNodeOutput from "./GraphNodeOutput";
 
 const GRID_SIZE: number = 10000; // in px
 const GRID_SIZE_HALF: number = 5000; // in px
@@ -35,6 +37,13 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 
 	private _nodeTable: Map<Guid, Node>;
 	private _selectedGraphNode: GraphNode | null = null;
+	private _selectedGraphNodeIO: GraphNodeOutput<any> | BaseGraphNodeProperty<any> | null = null;
+
+	private _canvas: HTMLCanvasElement | null = null;
+	private _canvasContext: CanvasRenderingContext2D | null = null;
+
+	private _mouseX: number = 0;
+	private _mouseY: number = 0;
 
 	constructor(props: IGraphProperties) {
 		super(props);
@@ -69,6 +78,14 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 
 	public get selectedGraphNode(): GraphNode | null {
 		return this._selectedGraphNode;
+	}
+
+	public set selectedGraphNodeIO(IO: GraphNodeOutput<any> | BaseGraphNodeProperty<any> | null) {
+		this._selectedGraphNodeIO = IO;
+	}
+
+	public get selectedGraphNodeIO(): GraphNodeOutput<any> | BaseGraphNodeProperty<any> | null {
+		return this._selectedGraphNodeIO;
 	}
 
 	public pageToGraphCoordinates(x: number, y: number): IPosition {
@@ -192,6 +209,18 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 		this.setTransform(0, 0, 1);
 	}
 
+	private backplaneMouseUp(): void {
+		if (!this._selectedGraphNodeIO) return;
+		this._selectedGraphNodeIO = null;
+		this.moveable = true;
+	}
+
+	private graphMouseLeave(event: React.MouseEvent): void {
+		if (!this._selectedGraphNodeIO) return;
+		this._selectedGraphNodeIO = null;
+		this.moveable = true;
+	}
+
 	private onWheel(event: WheelEvent): void {
 		event.preventDefault();
 
@@ -236,6 +265,9 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 	}
 
 	private onMouseMove(event: MouseEvent): void {
+		this._mouseX = this.getMouseX(event);
+		this._mouseY = this.getMouseY(event);
+
 		if (!this.mouseDown) return;
 
 		const x: number = this.getMouseX(event);
@@ -252,6 +284,64 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 			graph.addEventListener("mouseleave", this.onMouseUp.bind(this));
 			graph.addEventListener("mousemove", this.onMouseMove.bind(this));
 		}
+
+		this._canvas = document.getElementById("canvas") as HTMLCanvasElement;
+		if (this._canvas) {
+			this._canvasContext = this._canvas.getContext("2d");
+			window.requestAnimationFrame(this.renderNodesCanvas.bind(this));
+		}
+	}
+
+	private renderNodesCanvas(): void {
+		if (!this._canvas) return;
+		if (!this._canvasContext) return;
+
+		const canvas = this._canvas;
+		const context = this._canvasContext;
+
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		context.strokeStyle = "white";
+		context.lineWidth = 3 * this._currentZoom;
+
+		const bezierOffset = 150 * this._currentZoom;
+
+		if (this._selectedGraphNodeIO) {
+			const selector: HTMLElement | null = (this._selectedGraphNodeIO instanceof BaseGraphNodeProperty) ? 
+												  this._selectedGraphNodeIO.props.property.userSelector :
+												  this._selectedGraphNodeIO.props.output.userSelector;
+			if (selector) {
+				const rect = selector.getBoundingClientRect();
+				const x = (rect.left + rect.right) / 2, y = (rect.top + rect.bottom) / 2;
+				context.beginPath();
+				context.moveTo(x, y);
+				context.lineTo(this._mouseX, this._mouseY);
+				context.stroke();
+			}
+		}
+
+		for (const node of this.state.nodes) {
+			for (const [_, property] of node.properties) {
+				if (property.linkedOutput && property.userSelector && property.linkedOutput.userSelector) {
+
+					const propertyRect = property.userSelector.getBoundingClientRect();
+					const outputRect = property.linkedOutput.userSelector.getBoundingClientRect();
+
+					const px = (propertyRect.left + propertyRect.right) / 2, py = (propertyRect.top + propertyRect.bottom) / 2;
+					const ox = (outputRect.left + outputRect.right) / 2, oy = (outputRect.top + outputRect.bottom) / 2;
+
+					context.beginPath();
+					context.moveTo(px, py);
+					context.bezierCurveTo(px - bezierOffset, py, ox + bezierOffset, oy, ox, oy);
+					context.stroke();
+
+				}
+			}
+		}
+
+		window.requestAnimationFrame(this.renderNodesCanvas.bind(this));
 	}
 
 	private renderNodes(): Array<JSX.Element> {
@@ -269,10 +359,11 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 			<div id="graph" style={{
 				width: GRID_SIZE, height: GRID_SIZE,
 				left: -(GRID_SIZE_HALF - (window.innerWidth / 2)), top: -(GRID_SIZE_HALF - (window.innerHeight / 2))
-			}}>
+			}} onMouseLeave={this.graphMouseLeave.bind(this)}>
+				<div id="backplane" onMouseUp={this.backplaneMouseUp.bind(this)} />
 				{this.renderNodes()}
-				<canvas />
 			</div>
+			<canvas id="canvas" />
 		</div>);
 	}
 }
