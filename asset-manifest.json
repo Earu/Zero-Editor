@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/Zero-Editor/static/css/main.ead8f286.chunk.css",
-    "main.js": "/Zero-Editor/static/js/main.daf82d60.chunk.js",
-    "main.js.map": "/Zero-Editor/static/js/main.daf82d60.chunk.js.map",
+    "main.js": "/Zero-Editor/static/js/main.48051d5a.chunk.js",
+    "main.js.map": "/Zero-Editor/static/js/main.48051d5a.chunk.js.map",
     "runtime-main.js": "/Zero-Editor/static/js/runtime-main.24943b5a.js",
     "runtime-main.js.map": "/Zero-Editor/static/js/runtime-main.24943b5a.js.map",
-    "static/js/2.a7c3683a.chunk.js": "/Zero-Editor/static/js/2.a7c3683a.chunk.js",
-    "static/js/2.a7c3683a.chunk.js.map": "/Zero-Editor/static/js/2.a7c3683a.chunk.js.map",
+    "static/js/2.a827ebdc.chunk.js": "/Zero-Editor/static/js/2.a827ebdc.chunk.js",
+    "static/js/2.a827ebdc.chunk.js.map": "/Zero-Editor/static/js/2.a827ebdc.chunk.js.map",
     "index.html": "/Zero-Editor/index.html",
-    "precache-manifest.7d1bc299453282b5dc2dc0bd31416453.js": "/Zero-Editor/precache-manifest.7d1bc299453282b5dc2dc0bd31416453.js",
+    "precache-manifest.1a244afb90b956abcacaa3197bae6214.js": "/Zero-Editor/precache-manifest.1a244afb90b956abcacaa3197bae6214.js",
     "service-worker.js": "/Zero-Editor/service-worker.js",
     "static/css/main.ead8f286.chunk.css.map": "/Zero-Editor/static/css/main.ead8f286.chunk.css.map",
-    "static/js/2.a7c3683a.chunk.js.LICENSE.txt": "/Zero-Editor/static/js/2.a7c3683a.chunk.js.LICENSE.txt"
+    "static/js/2.a827ebdc.chunk.js.LICENSE.txt": "/Zero-Editor/static/js/2.a827ebdc.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.24943b5a.js",
-    "static/js/2.a7c3683a.chunk.js",
+    "static/js/2.a827ebdc.chunk.js",
     "static/css/main.ead8f286.chunk.css",
-    "static/js/main.daf82d60.chunk.js"
+    "static/js/main.48051d5a.chunk.js"
   ]
 }
