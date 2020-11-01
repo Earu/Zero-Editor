@@ -1,3 +1,4 @@
+import { EventEmitter } from "events";
 import { Guid } from "guid-typescript";
 import Editor from "../components/Editor";
 import { IJsonNode, IJsonOutput, IJsonProperty } from "./JsonNode";
@@ -10,14 +11,14 @@ export class NodeOutput<T> {
 	private _typeName: string;
 	private _value: T;
 	private _userSelector: HTMLElement | null = null;
-	private _linksCount: number;
+	private _linkedProperties: Array<NodeProperty<T>>;
 
 	constructor(node: Node, name: string, typeName: string, defaultValue: T) {
 		this._node = node;
 		this._name = name;
 		this._typeName = typeName;
 		this._value = defaultValue;
-		this._linksCount = 0;
+		this._linkedProperties = [];
 	}
 
 	public get node(): Node {
@@ -34,6 +35,9 @@ export class NodeOutput<T> {
 
 	public set value(value: T) {
 		this._value = value;
+		for (const property of this._linkedProperties) {
+			property.emit("update");
+		}
 	}
 
 	public get value(): T {
@@ -48,16 +52,16 @@ export class NodeOutput<T> {
 		return this._userSelector;
 	}
 
-	public set linksCount(count: number) {
-		this._linksCount = count;
+	public get linkedProperties(): Array<NodeProperty<T>> {
+		return this._linkedProperties;
 	}
 
-	public get linksCount(): number {
-		return this._linksCount;
+	public set linkedProperties(properties: Array<NodeProperty<T>>) {
+		this._linkedProperties = properties;
 	}
 }
 
-export class NodeProperty<T> {
+export class NodeProperty<T> extends EventEmitter {
 	private _node: Node;
 	private _name: string;
 	private _staticValue: T;
@@ -66,6 +70,8 @@ export class NodeProperty<T> {
 	private _userSelector: HTMLElement | null = null;
 
 	constructor(node: Node, name: string, typeName: string, defaultValue: T) {
+		super();
+
 		this._node = node;
 		this._name = name;
 		this._linkedOutput = null;
@@ -108,7 +114,8 @@ export class NodeProperty<T> {
 	public trySetLinkedOutput(output: NodeOutput<T> | null): boolean {
 		if (!output) {
 			if (this._linkedOutput) {
-				this._linkedOutput.linksCount--;
+				this._linkedOutput.linkedProperties = this._linkedOutput.linkedProperties
+					.filter(prop => prop !== this);
 			}
 
 			this._linkedOutput = null;
@@ -117,7 +124,7 @@ export class NodeProperty<T> {
 
 		if (output.typeName === this.typeName) {
 			this._linkedOutput = output;
-			this._linkedOutput.linksCount++;
+			this._linkedOutput.linkedProperties.push(this);
 
 			return true;
 		}

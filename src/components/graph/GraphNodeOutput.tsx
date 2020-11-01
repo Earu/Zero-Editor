@@ -25,10 +25,16 @@ export default class GraphNodeOutput<T> extends React.Component<IGraphNodeOutput
 
 	private onMouseUp(): void {
 		if (this.props.graph.selectedGraphNodeIO instanceof BaseGraphNodeProperty) {
-			this.props.graph.selectedGraphNodeIO.props.property.trySetLinkedOutput(this.props.output);
+			const property = this.props.graph.selectedGraphNodeIO.props.property;
+			if (property.trySetLinkedOutput(this.props.output)) {
+				property.userSelector?.classList.add("linked");
+				this.props.output.userSelector?.classList.add("linked");
+			}
+
 			this.props.graph.selectedGraphNodeIO = null;
 			this.props.graph.isMoveable = true;
 		}
+
 		if (this.props.graph.selectedGraphNodeIO === this) {
 			this.props.graph.selectedGraphNodeIO = null;
 			this.props.graph.isMoveable = true;
