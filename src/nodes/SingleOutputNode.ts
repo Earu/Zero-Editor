@@ -6,8 +6,8 @@ import { Node, NodeOutput, NodeProperty } from "./Node";
 
 class SingleOutputNode<T> extends Node {
 	constructor(editor: Editor, name: string, value: T) {
-		super (editor, name, editor.factory.getNodeColor(name));
-		this.outputs.set("value", new NodeOutput<T>(value, name));
+		super (editor, name);
+		this.outputs.set("value", new NodeOutput<T>(this, "value", name, value));
 	}
 
 	public get output(): NodeOutput<T> {
@@ -18,9 +18,9 @@ class SingleOutputNode<T> extends Node {
 export class VectorNode extends SingleOutputNode<Vector> {
 	constructor(editor: Editor, value: Vector) {
 		super (editor, "Vector", value);
-		this.properties.set("x", new NodeProperty<number>(value.x, "Number"));
-		this.properties.set("y", new NodeProperty<number>(value.y, "Number"));
-		this.properties.set("z", new NodeProperty<number>(value.z, "Number"));
+		this.properties.set("x", new NodeProperty<number>(this, "x", "Number", value.x));
+		this.properties.set("y", new NodeProperty<number>(this, "y", "Number", value.y));
+		this.properties.set("z", new NodeProperty<number>(this, "z", "Number", value.z));
 	}
 
 	public updateOutputs(): void {
@@ -34,9 +34,9 @@ export class VectorNode extends SingleOutputNode<Vector> {
 export class AngleNode extends SingleOutputNode<Angle>{
 	constructor(editor: Editor, value: Angle) {
 		super (editor, "Angle", value);
-		this.properties.set("roll", new NodeProperty<number>(value.roll, "Number"));
-		this.properties.set("pitch", new NodeProperty<number>(value.pitch, "Number"));
-		this.properties.set("yaw", new NodeProperty<number>(value.yaw, "Number"));
+		this.properties.set("roll", new NodeProperty<number>(this, "roll", "Number", value.roll));
+		this.properties.set("pitch", new NodeProperty<number>(this, "pitch", "Number", value.pitch));
+		this.properties.set("yaw", new NodeProperty<number>(this, "yaw", "Number", value.yaw));
 	}
 
 	public updateOutputs(): void {
@@ -50,7 +50,7 @@ export class AngleNode extends SingleOutputNode<Angle>{
 export class ToggleNode extends SingleOutputNode<boolean> {
 	constructor(editor: Editor, value: boolean) {
 		super (editor, "Toggle", value);
-		this.properties.set("value", new NodeProperty<boolean>(value, "Toggle"));
+		this.properties.set("value", new NodeProperty<boolean>(this, "value", "Toggle", value));
 	}
 
 	public updateOutputs(): void {
@@ -61,7 +61,7 @@ export class ToggleNode extends SingleOutputNode<boolean> {
 export class NumberNode extends SingleOutputNode<number> {
 	constructor(editor: Editor, value: number) {
 		super (editor, "Number", value);
-		this.properties.set("value", new NodeProperty<number>(value, "Number"));
+		this.properties.set("value", new NodeProperty<number>(this, "value", "Number", value));
 	}
 
 	public updateOutputs(): void {
@@ -72,10 +72,10 @@ export class NumberNode extends SingleOutputNode<number> {
 export class ColorNode extends SingleOutputNode<Color> {
 	constructor(editor: Editor, value: Color) {
 		super (editor, "Color", value);
-		this.properties.set("red", new NodeProperty<number>(value.red, "Number"));
-		this.properties.set("green", new NodeProperty<number>(value.green, "Number"));
-		this.properties.set("blue", new NodeProperty<number>(value.blue, "Number"));
-		this.properties.set("alpha", new NodeProperty<number>(value.alpha, "Number"));
+		this.properties.set("red", new NodeProperty<number>(this, "red", "Number", value.red));
+		this.properties.set("green", new NodeProperty<number>(this, "green", "Number", value.green));
+		this.properties.set("blue", new NodeProperty<number>(this, "blue", "Number", value.blue));
+		this.properties.set("alpha", new NodeProperty<number>(this, "alpha", "Number", value.alpha));
 	}
 
 	public updateOutputs(): void {

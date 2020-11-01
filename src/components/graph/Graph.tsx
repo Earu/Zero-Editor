@@ -33,13 +33,13 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 	private _xOffset: number = 0;
 	private _yOffset: number = 0;
 
-	private nodeTable: Map<Guid, Node>;
+	private _nodeTable: Map<Guid, Node>;
 	private _selectedGraphNode: GraphNode | null = null;
 
 	constructor(props: IGraphProperties) {
 		super(props);
 		this.props.editor.graph = this;
-		this.nodeTable = new Map<Guid, Node>();
+		this._nodeTable = new Map<Guid, Node>();
 		this.state = { nodes: [] };
 	}
 
@@ -57,6 +57,10 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 
 	public get size(): number {
 		return GRID_SIZE;
+	}
+
+	public get nodeTable(): Map<Guid, Node> {
+		return this._nodeTable;
 	}
 
 	public set selectedGraphNode(node: GraphNode | null) {
@@ -161,26 +165,31 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 	}
 
 	public addNode(node: Node): void {
-		this.nodeTable.set(node.id, node);
+		this._nodeTable.set(node.id, node);
 		this.state.nodes.push(node);
 		this.updateNodes();
 	}
 
 	public removeNode(id: Guid): void {
 		const nodes = this.state.nodes.filter(node => node.id !== id);
-		this.nodeTable.delete(id);
+		this._nodeTable.delete(id);
 
 		this.setState({ nodes });
 		this.updateTransform();
 	}
 
 	public getNode(id: Guid): Node | undefined {
-		return this.nodeTable.get(id);
+		return this._nodeTable.get(id);
 	}
 
 	public updateNodes(): void {
 		this.setState({ nodes: this.state.nodes });
 		this.updateTransform();
+	}
+
+	public reset(): void {
+		this.setState({ nodes: [] });
+		this.setTransform(0, 0, 1);
 	}
 
 	private onWheel(event: WheelEvent): void {

@@ -1,15 +1,28 @@
 import { Guid } from "guid-typescript";
 import Editor from "../components/Editor";
+import { IJsonNode, IJsonOutput, IJsonProperty } from "./JsonNode";
 
 const DEFAULT_NODE_WIDTH: number = 125;
 
 export class NodeOutput<T> {
+	private _node: Node;
+	private _name: string;
 	private _typeName: string;
 	private _value: T;
 
-	constructor(defaultValue: T, typeName: string) {
+	constructor(node: Node, name: string, typeName: string, defaultValue: T) {
+		this._node = node;
+		this._name = name;
 		this._typeName = typeName;
 		this._value = defaultValue;
+	}
+
+	public get node(): Node {
+		return this._node;
+	}
+
+	public get name(): string {
+		return this._name;
 	}
 
 	public get typeName(): string {
@@ -26,27 +39,47 @@ export class NodeOutput<T> {
 }
 
 export class NodeProperty<T> {
-	private staticValue: T;
-	private linkedOutput: NodeOutput<T>| null;
+	private _node: Node;
+	private _name: string;
+	private _staticValue: T;
+	private _linkedOutput: NodeOutput<T>| null;
 	private _typeName: string;
 
-	constructor(defaultValue: T, typeName: string) {
-		this.linkedOutput = null;
-		this.staticValue = defaultValue;
+	constructor(node: Node, name: string, typeName: string, defaultValue: T) {
+		this._node = node;
+		this._name = name;
+		this._linkedOutput = null;
+		this._staticValue = defaultValue;
 		this._typeName = typeName;
+	}
+
+	public get node(): Node {
+		return this._node;
+	}
+
+	public get name(): string {
+		return this._name;
 	}
 
 	public get typeName(): string {
 		return this._typeName;
 	}
 
-	public setStaticValue(value: T): void {
-		this.staticValue = value;
+	public set staticValue(value: T) {
+		this._staticValue = value;
+	}
+
+	public get staticValue(): T {
+		return this._staticValue;
+	}
+
+	public get linkedOutput(): NodeOutput<T> | null {
+		return this._linkedOutput;
 	}
 
 	public trySetLinkedOutput(output: NodeOutput<T>): boolean {
 		if (output.typeName === this.typeName) {
-			this.linkedOutput = output;
+			this._linkedOutput = output;
 
 			return true;
 		}
@@ -55,8 +88,8 @@ export class NodeProperty<T> {
 	}
 
 	public getValue(): T {
-		if (!this.linkedOutput) return this.staticValue;
-		return this.linkedOutput.value;
+		if (!this._linkedOutput) return this._staticValue;
+		return this._linkedOutput.value;
 	}
 }
 
@@ -72,14 +105,14 @@ export class Node {
 	private _properties: Map<string, NodeProperty<any>>;
 	private _outputs: Map<string, NodeOutput<any>>;
 
-	constructor(editor: Editor, name: string, color: string) {
+	constructor(editor: Editor, name: string) {
 		this._id = Guid.create();
 		this._editor = editor;
 		this._x = 0;
 		this._y = 0;
 		this._width = DEFAULT_NODE_WIDTH;
 		this._name = name;
-		this._color = color;
+		this._color = editor.factory.getNodeColor(name);
 		this._properties = new Map<string, NodeProperty<any>>();
 		this._outputs = new Map<string, NodeOutput<any>>();
 	}
@@ -140,5 +173,38 @@ export class Node {
 
 	public get color(): string {
 		return this._color;
+	}
+
+	public toJson(): IJsonNode {
+		const jsonOutputs: Array<IJsonOutput> = [];
+		for (const [outputName, output] of this._outputs) {
+			jsonOutputs.push({
+				name: outputName,
+				type: output.typeName,
+				value: output.value
+			});
+		}
+
+		const jsonProperties: Array<IJsonProperty> = [];
+		for (const [propertyName, property] of this._properties) {
+			jsonProperties.push({
+				name: propertyName,
+				type: property.typeName,
+				staticValue: property.staticValue,
+				linkedOutput: property.linkedOutput == null ? null : {
+					nodeId: property.linkedOutput.node._id.toString(),
+					outputName: property.linkedOutput.name
+				}
+			});
+		}
+
+		return {
+			id: this._id.toString(),
+			x: this._x,
+			y: this._y,
+			name: this._name,
+			outputs: jsonOutputs,
+			properties: jsonProperties,
+		};
 	}
 }
