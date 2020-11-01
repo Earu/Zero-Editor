@@ -31,6 +31,7 @@ export class BaseGraphNodeProperty<T> extends React.Component<IGraphNodeProperty
 			const output = this.props.graph.selectedGraphNodeIO.props.output;
 			if (this.props.property.trySetLinkedOutput(output)) {
 				this.props.property.userSelector?.classList.add("linked");
+				this.props.property.emit("update");
 				output.userSelector?.classList.add("linked");
 			}
 
@@ -54,6 +55,7 @@ export class BaseGraphNodeProperty<T> extends React.Component<IGraphNodeProperty
 		}
 
 		this.props.property.trySetLinkedOutput(null);
+		this.props.property.emit("update");
 		this.props.graph.selectedGraphNodeIO = this;
 		this.props.graph.isMoveable = false;
 	}
@@ -75,6 +77,7 @@ export class GraphNodeNumberProperty extends BaseGraphNodeProperty<number> {
 	protected update(): void {
 		if (this.inputNumber.current) {
 			this.inputNumber.current.value = this.props.property.getValue().toString();
+			this.inputNumber.current.disabled = this.props.property.linkedOutput !== null;
 		}
 
 		this.updateNodeOutput();
@@ -112,6 +115,7 @@ export class GraphNodeBooleanProperty extends BaseGraphNodeProperty<boolean> {
 	protected update(): void {
 		if (this.inputBoolean.current) {
 			this.inputBoolean.current.value = this.props.property.getValue().toString();
+			this.inputBoolean.current.disabled = this.props.property.linkedOutput !== null;
 		}
 
 		this.updateNodeOutput();
@@ -150,17 +154,21 @@ export class GraphNodeVectorProperty extends BaseGraphNodeProperty<Vector> {
 
 	protected update(): void {
 		const value: Vector = this.props.property.getValue();
+		const isLinked: boolean = this.props.property.linkedOutput !== null;
 
 		if (this.inputX.current) {
 			this.inputX.current.value = value.x.toString();
+			this.inputX.current.disabled = isLinked;
 		}
 
 		if (this.inputY.current) {
 			this.inputY.current.value = value.y.toString();
+			this.inputY.current.disabled = isLinked;
 		}
 
 		if (this.inputZ.current) {
 			this.inputZ.current.value = value.z.toString();
+			this.inputZ.current.disabled = isLinked;
 		}
 
 		this.updateNodeOutput();
@@ -214,17 +222,21 @@ export class GraphNodeAngleProperty extends BaseGraphNodeProperty<Angle>{
 
 	protected update(): void {
 		const value: Angle = this.props.property.getValue();
+		const isLinked: boolean = this.props.property.linkedOutput !== null;
 
 		if (this.inputRoll.current) {
 			this.inputRoll.current.value = value.roll.toString();
+			this.inputRoll.current.disabled = isLinked;
 		}
 
 		if (this.inputPitch.current) {
 			this.inputPitch.current.value = value.pitch.toString();
+			this.inputPitch.current.disabled = isLinked;
 		}
 
 		if (this.inputYaw.current) {
 			this.inputYaw.current.value = value.yaw.toString();
+			this.inputYaw.current.disabled = isLinked;
 		}
 
 		this.updateNodeOutput();
@@ -280,21 +292,26 @@ export class GraphNodeColorProperty extends BaseGraphNodeProperty<Color> {
 
 	protected update(): void {
 		const value: Color = this.props.property.getValue();
+		const isLinked: boolean = this.props.property.linkedOutput !== null;
 
 		if (this.inputRed.current) {
 			this.inputRed.current.value = value.red.toString();
+			this.inputRed.current.disabled = isLinked;
 		}
 
 		if (this.inputGreen.current) {
 			this.inputGreen.current.value = value.green.toString();
+			this.inputGreen.current.disabled = isLinked;
 		}
 
 		if (this.inputBlue.current) {
 			this.inputBlue.current.value = value.blue.toString();
+			this.inputBlue.current.disabled = isLinked;
 		}
 
 		if (this.inputAlpha.current) {
 			this.inputAlpha.current.value = value.alpha.toString();
+			this.inputAlpha.current.disabled = isLinked;
 		}
 
 		this.updateNodeOutput();
