@@ -25,10 +25,16 @@ export class BaseGraphNodeProperty<T> extends React.Component<IGraphNodeProperty
 
 	protected onMouseUp(): void {
 		if (this.props.graph.selectedGraphNodeIO instanceof GraphNodeOutput) {
-			this.props.property.trySetLinkedOutput(this.props.graph.selectedGraphNodeIO.props.output);
+			const output = this.props.graph.selectedGraphNodeIO.props.output;
+			if (this.props.property.trySetLinkedOutput(output)) {
+				this.props.property.userSelector?.classList.add("linked");
+				output.userSelector?.classList.add("linked");
+			}
+
 			this.props.graph.selectedGraphNodeIO = null;
 			this.props.graph.isMoveable = true;
 		}
+
 		if (this.props.graph.selectedGraphNodeIO === this) {
 			this.props.graph.selectedGraphNodeIO = null;
 			this.props.graph.isMoveable =  true;
@@ -36,6 +42,14 @@ export class BaseGraphNodeProperty<T> extends React.Component<IGraphNodeProperty
 	}
 
 	protected onMouseDown(): void {
+		this.props.property.userSelector?.classList.remove("linked");
+
+		// only remove the style for the output selector if we know its not linked to any property
+		const linkedOutput = this.props.property.linkedOutput;
+		if (linkedOutput && linkedOutput.linksCount === 1) {
+			linkedOutput.userSelector?.classList.remove("linked");
+		}
+
 		this.props.property.trySetLinkedOutput(null);
 		this.props.graph.selectedGraphNodeIO = this;
 		this.props.graph.isMoveable = false;

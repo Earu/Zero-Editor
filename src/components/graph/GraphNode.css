@@ -3,6 +3,8 @@
 	color: white;
 	box-shadow: 0px 0px 6px 0px #000000;
 	z-index: 500;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
 }
 
 .graph-node>.header {
@@ -22,6 +24,8 @@
 .graph-node>.content {
 	background-color: rgba(0, 0, 0, 0.75);
 	padding: 3px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
 }
 
 .graph-node>.header>div {

@@ -11,7 +11,6 @@ interface IGraphNodeOutputProperties<T> {
 }
 
 export default class GraphNodeOutput<T> extends React.Component<IGraphNodeOutputProperties<T>> {
-	
 	private _userSelectionRef: React.RefObject<any> | null = null;
 
 	constructor(props: any) {

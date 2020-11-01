@@ -303,15 +303,16 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 		canvas.height = window.innerHeight;
 
 		context.clearRect(0, 0, canvas.width, canvas.height);
-		context.strokeStyle = "white";
+		context.strokeStyle = "#eeeeee";
 		context.lineWidth = 3 * this._currentZoom;
 
 		const bezierOffset = 150 * this._currentZoom;
 
 		if (this._selectedGraphNodeIO) {
 			const selector: HTMLElement | null = (this._selectedGraphNodeIO instanceof BaseGraphNodeProperty) ?
-												  this._selectedGraphNodeIO.props.property.userSelector :
-												  this._selectedGraphNodeIO.props.output.userSelector;
+				this._selectedGraphNodeIO.props.property.userSelector :
+				this._selectedGraphNodeIO.props.output.userSelector;
+
 			if (selector) {
 				const rect = selector.getBoundingClientRect();
 				const x = (rect.left + rect.right) / 2, y = (rect.top + rect.bottom) / 2;
@@ -338,7 +339,6 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 					context.moveTo(propertyX, propertyY);
 					context.bezierCurveTo(propertyX - bezierOffset, propertyY, outputX + bezierOffset, outputY, outputX, outputY);
 					context.stroke();
-
 				}
 			}
 		}
