@@ -41,7 +41,7 @@ export class BaseGraphNodeProperty<T> extends React.Component<IGraphNodeProperty
 
 		if (this.props.graph.selectedGraphNodeIO === this) {
 			this.props.graph.selectedGraphNodeIO = null;
-			this.props.graph.isMoveable =  true;
+			this.props.graph.isMoveable = true;
 		}
 	}
 
