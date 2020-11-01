@@ -1,5 +1,6 @@
 .graph-node-output {
 	text-align: right;
+	user-select: none;
 }
 
 .graph-node-output>.user-selection {
@@ -21,6 +22,12 @@
 }
 
 .graph-node-output>.user-selection:hover {
+	background-color: #eeeeee;
+	border: 2px solid #aaaaaa;
+	transform: scale(1.1);
+}
+
+.graph-node-output>.linked {
 	background-color: #eeeeee;
 	border: 2px solid #aaaaaa;
 	transform: scale(1.1);

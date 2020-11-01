@@ -17,6 +17,14 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 	private offsetY: number = 0;
 	private offsetZoom: number = 0;
 
+	private onContentMouseDown(event: React.MouseEvent): void {
+		this.props.graph.isMoveable = false;
+	}
+
+	private onContentMouseLeave(event: React.MouseEvent): void {
+		this.props.graph.isMoveable = true;
+	}
+
 	private onMouseDown(event: React.MouseEvent): void {
 		const x = this.props.node.x, y = this.props.node.y
 		const screenPos = this.props.graph.graphToPageCoordinates(x, y);
@@ -75,23 +83,23 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 			switch (property.typeName) {
 				case "Toggle":
 					elements.push(<GraphNodeToggleProperty id={elementId} key={elementId} node={this.props.node}
-						name={propertyName} property={property} />);
+						name={propertyName} property={property} graph={this.props.graph}/>);
 					break;
 				case "Number":
 					elements.push(<GraphNodeNumberProperty id={elementId} key={elementId} node={this.props.node}
-						name={propertyName} property={property} />);
+						name={propertyName} property={property} graph={this.props.graph}/>);
 					break;
 				case "Vector":
 					elements.push(<GraphNodeVectorProperty id={elementId} key={elementId} node={this.props.node}
-						name={propertyName} property={property} />);
+						name={propertyName} property={property} graph={this.props.graph}/>);
 					break
 				case "Angle":
 					elements.push(<GraphNodeAngleProperty id={elementId} key={elementId} node={this.props.node}
-						name={propertyName} property={property} />);
+						name={propertyName} property={property} graph={this.props.graph}/>);
 					break;
 				case "Color":
 					elements.push(<GraphNodeColorProperty id={elementId} key={elementId} node={this.props.node}
-						name={propertyName} property={property} />);
+						name={propertyName} property={property} graph={this.props.graph}/>);
 					break;
 				default:
 					break;
@@ -105,7 +113,7 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 		const elements: Array<JSX.Element> = [];
 		for (const [outputName, output] of this.props.node.outputs) {
 			const elementId: string = `${this.props.node.id}_${outputName}`;
-			elements.push(<GraphNodeOutput key={elementId} name={outputName} output={output} />);
+			elements.push(<GraphNodeOutput key={elementId} name={outputName} output={output} graph={this.props.graph}/>);
 		}
 
 		return elements;
