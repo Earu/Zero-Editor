@@ -2,7 +2,7 @@ import Editor from "../components/Editor";
 import Angle from "../gmodTypes/Angle";
 import Color from "../gmodTypes/Color";
 import Vector from "../gmodTypes/Vector";
-import { AngleNode, ColorNode, NumberNode, ToggleNode, VectorNode } from "./BasicNode";
+import { AngleNode, ColorNode, NumberNode, ToggleNode, VectorNode } from "./SingleOutputNode";
 import { Node } from "./Node";
 
 export default class NodeFactory {
