@@ -1,7 +1,7 @@
 # Zero Editor
 The web node-based Zero editor.
 
-![preview](https://i.imgur.com/0dHBUYn.gif)
+![preview](https://i.imgur.com/zB88ScK.gif)
 
 ## What is this?
 This is a web node-based editor that aims to provide a modern solution to [PAC3](https://github.com/CapsAdmin/pac3).
