@@ -9,12 +9,21 @@ export class NodeOutput<T> {
 	private _name: string;
 	private _typeName: string;
 	private _value: T;
+	private _userSelector: HTMLElement | null = null;
 
 	constructor(node: Node, name: string, typeName: string, defaultValue: T) {
 		this._node = node;
 		this._name = name;
 		this._typeName = typeName;
 		this._value = defaultValue;
+	}
+
+	public set userSelector(selector: HTMLElement | null) {
+		this._userSelector = selector;
+	}
+
+	public get userSelector(): HTMLElement | null {
+		return this._userSelector;
 	}
 
 	public get node(): Node {
@@ -44,6 +53,7 @@ export class NodeProperty<T> {
 	private _staticValue: T;
 	private _linkedOutput: NodeOutput<T>| null;
 	private _typeName: string;
+	private _userSelector: HTMLElement | null = null;
 
 	constructor(node: Node, name: string, typeName: string, defaultValue: T) {
 		this._node = node;
@@ -51,6 +61,14 @@ export class NodeProperty<T> {
 		this._linkedOutput = null;
 		this._staticValue = defaultValue;
 		this._typeName = typeName;
+	}
+
+	public set userSelector(selector: HTMLElement | null) {
+		this._userSelector = selector;
+	}
+
+	public get userSelector(): HTMLElement | null {
+		return this._userSelector;
 	}
 
 	public get node(): Node {
@@ -77,7 +95,12 @@ export class NodeProperty<T> {
 		return this._linkedOutput;
 	}
 
-	public trySetLinkedOutput(output: NodeOutput<T>): boolean {
+	public trySetLinkedOutput(output: NodeOutput<T> | null): boolean {
+		if (!output) {
+			this._linkedOutput = null;
+			return true;
+		}
+
 		if (output.typeName === this.typeName) {
 			this._linkedOutput = output;
 
