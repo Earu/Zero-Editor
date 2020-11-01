@@ -309,7 +309,7 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 		const bezierOffset = 150 * this._currentZoom;
 
 		if (this._selectedGraphNodeIO) {
-			const selector: HTMLElement | null = (this._selectedGraphNodeIO instanceof BaseGraphNodeProperty) ? 
+			const selector: HTMLElement | null = (this._selectedGraphNodeIO instanceof BaseGraphNodeProperty) ?
 												  this._selectedGraphNodeIO.props.property.userSelector :
 												  this._selectedGraphNodeIO.props.output.userSelector;
 			if (selector) {
@@ -323,18 +323,20 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 		}
 
 		for (const node of this.state.nodes) {
-			for (const [_, property] of node.properties) {
+			for (const [, property] of node.properties) {
 				if (property.linkedOutput && property.userSelector && property.linkedOutput.userSelector) {
 
 					const propertyRect = property.userSelector.getBoundingClientRect();
 					const outputRect = property.linkedOutput.userSelector.getBoundingClientRect();
 
-					const px = (propertyRect.left + propertyRect.right) / 2, py = (propertyRect.top + propertyRect.bottom) / 2;
-					const ox = (outputRect.left + outputRect.right) / 2, oy = (outputRect.top + outputRect.bottom) / 2;
+					const propertyX = (propertyRect.left + propertyRect.right) / 2;
+					const propertyY = (propertyRect.top + propertyRect.bottom) / 2;
+					const outputX = (outputRect.left + outputRect.right) / 2;
+					const outputY = (outputRect.top + outputRect.bottom) / 2;
 
 					context.beginPath();
-					context.moveTo(px, py);
-					context.bezierCurveTo(px - bezierOffset, py, ox + bezierOffset, oy, ox, oy);
+					context.moveTo(propertyX, propertyY);
+					context.bezierCurveTo(propertyX - bezierOffset, propertyY, outputX + bezierOffset, outputY, outputX, outputY);
 					context.stroke();
 
 				}
@@ -345,12 +347,12 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 	}
 
 	private renderNodes(): Array<JSX.Element> {
-		const ret: Array<JSX.Element> = [];
+		const elements: Array<JSX.Element> = [];
 		for(const node of this.state.nodes) {
-			ret.push(<GraphNode key={node.id.toString()} graph={this} node={node} />);
+			elements.push(<GraphNode key={node.id.toString()} graph={this} node={node} />);
 		}
 
-		return ret;
+		return elements;
 	}
 
 	public render(): JSX.Element {
