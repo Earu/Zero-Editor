@@ -1,9 +1,8 @@
 import React from "react";
-import { Node } from "../../nodes/Node";
+import Node from "../../nodes/Node";
 import Graph from "./Graph";
 import "./GraphNode.css";
 import GraphNodeOutput from "./GraphNodeOutput";
-import { GraphNodeAngleProperty, GraphNodeBooleanProperty as GraphNodeToggleProperty, GraphNodeColorProperty, GraphNodeNumberProperty, GraphNodeVectorProperty } from "./GraphNodeProperties";
 
 interface IGraphNodeProperties {
 	graph: Graph;
@@ -16,14 +15,6 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 	private offsetX: number = 0;
 	private offsetY: number = 0;
 	private offsetZoom: number = 0;
-
-	private onContentMouseDown(event: React.MouseEvent): void {
-		this.props.graph.isMoveable = false;
-	}
-
-	private onContentMouseLeave(event: React.MouseEvent): void {
-		this.props.graph.isMoveable = true;
-	}
 
 	private onMouseDown(event: React.MouseEvent): void {
 		const x = this.props.node.x, y = this.props.node.y
@@ -80,30 +71,8 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 		const elements: Array<JSX.Element> = [];
 		for (const [propertyName, property] of this.props.node.properties) {
 			const elementId: string = `${this.props.node.id}_${propertyName}`;
-			switch (property.typeName) {
-				case "Toggle":
-					elements.push(<GraphNodeToggleProperty id={elementId} key={elementId} node={this.props.node}
-						name={propertyName} property={property} graph={this.props.graph}/>);
-					break;
-				case "Number":
-					elements.push(<GraphNodeNumberProperty id={elementId} key={elementId} node={this.props.node}
-						name={propertyName} property={property} graph={this.props.graph}/>);
-					break;
-				case "Vector":
-					elements.push(<GraphNodeVectorProperty id={elementId} key={elementId} node={this.props.node}
-						name={propertyName} property={property} graph={this.props.graph}/>);
-					break
-				case "Angle":
-					elements.push(<GraphNodeAngleProperty id={elementId} key={elementId} node={this.props.node}
-						name={propertyName} property={property} graph={this.props.graph}/>);
-					break;
-				case "Color":
-					elements.push(<GraphNodeColorProperty id={elementId} key={elementId} node={this.props.node}
-						name={propertyName} property={property} graph={this.props.graph}/>);
-					break;
-				default:
-					break;
-			}
+			elements.push(this.props.graph.editor.factory.createGraphNodeProperty(
+				elementId, this.props.node, property, this.props.graph));
 		}
 
 		return elements;

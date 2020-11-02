@@ -1,13 +1,13 @@
 import { Guid } from "guid-typescript";
 import React from "react";
 import ReactDOM from "react-dom";
-import { Node } from "../../nodes/Node";
+import Node from "../../nodes/Node";
 import Editor from "../Editor";
 import "./NodeMenuItem.css";
 
 interface INodeMenuItemProperties {
 	name: string;
-	editor: Editor;
+	editor: Editor<any>;
 }
 
 export default class NodeMenuItem extends React.Component<INodeMenuItemProperties> {
