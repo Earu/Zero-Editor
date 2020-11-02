@@ -1,5 +1,5 @@
 import React from "react";
-import Editor from "../Editor";
+import Editor, { IEditorNodeCategory } from "../Editor";
 import NodeMenuCategory from "./NodeMenuCategory";
 import NodeMenuItem from "./NodeMenuItem";
 import "./NodeMenu.css";
@@ -9,35 +9,30 @@ interface INodeMenuProperties {
 }
 
 interface INodeMenuState {
-	searchResults: Map<string, Array<string>>;
+	searchResults: Array<IEditorNodeCategory>;
 	isSearching: boolean;
 }
-
-const MENU_LAYOUT: Map<string, Array<string>> = new Map<string, Array<string>>();
-MENU_LAYOUT.set("Data", [ "Number", "Toggle", "Vector", "Angle", "Color" ]);
-MENU_LAYOUT.set("Entity", [ "Model" ]);
-MENU_LAYOUT.set("Model", []);
-MENU_LAYOUT.set("Effects", []);
-MENU_LAYOUT.set("Model", []);
-MENU_LAYOUT.set("Modifiers", []);
 
 export default class NodeMenu extends React.Component<INodeMenuProperties, INodeMenuState> {
 	constructor(props: INodeMenuProperties) {
 		super(props);
-		this.state = { searchResults: MENU_LAYOUT, isSearching: false };
+		this.state = { searchResults: this.props.editor.nodeCategories, isSearching: false };
 	}
 
 	private onSearch(event: React.FormEvent<HTMLInputElement>): void {
 		let currentSearch: string = event.currentTarget.value;
 		if (!currentSearch || currentSearch.trim() === "") {
-			this.setState({ searchResults: MENU_LAYOUT, isSearching: false });
+			this.setState({ searchResults: this.props.editor.nodeCategories, isSearching: false });
 			return;
 		}
 
 		currentSearch = currentSearch.trim().toLowerCase();
-		const resultLayout = new Map<string, Array<string>>();
-		for(const [categoryName, itemNames] of MENU_LAYOUT) {
-			resultLayout.set(categoryName, itemNames.filter(itemName => itemName.toLowerCase().includes(currentSearch)));
+		const resultLayout: Array<IEditorNodeCategory> = [];
+		for(const category of this.props.editor.nodeCategories) {
+			resultLayout.push({
+				name: category.name,
+				nodeNames: category.nodeNames.filter(nodeName => nodeName.toLowerCase().includes(currentSearch))
+			});
 		}
 
 		this.setState({ searchResults: resultLayout, isSearching: true });
@@ -45,13 +40,13 @@ export default class NodeMenu extends React.Component<INodeMenuProperties, INode
 
 	private renderItems(): Array<JSX.Element> {
 		const results: Array<JSX.Element> = [];
-		for(const [categoryName, itemNames] of this.state.searchResults) {
-			let categoryTitle = categoryName;
+		for(const category of this.state.searchResults) {
+			let categoryTitle = category.name;
 			if (this.state.isSearching)
-				categoryTitle += ` (${itemNames.length})`;
+				categoryTitle += ` (${category.nodeNames.length})`;
 
-			results.push(<NodeMenuCategory key={`node_menu_category_${categoryName}`} title={categoryTitle}>
-				{itemNames.map(itemName => <NodeMenuItem key={`node_menu_item_${categoryName}_${itemName}`} name={itemName} editor={this.props.editor} />)}
+			results.push(<NodeMenuCategory key={`node_menu_category_${category.name}`} title={categoryTitle}>
+				{category.nodeNames.map(nodeName => <NodeMenuItem key={`node_menu_item_${category.name}_${nodeName}`} name={nodeName} editor={this.props.editor} />)}
 			</NodeMenuCategory>);
 		}
 
