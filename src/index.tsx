@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Editor from "./components/Editor";
+import ZeroEditor from "./gmod/ZeroEditor";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 
-ReactDOM.render(<React.StrictMode><Editor /></React.StrictMode>,
+ReactDOM.render(<React.StrictMode><ZeroEditor /></React.StrictMode>,
 	document.getElementById("root"));
 
 // If you want your app to work offline and load faster, you can change

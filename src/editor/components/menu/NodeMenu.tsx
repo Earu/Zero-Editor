@@ -2,13 +2,13 @@ import React from "react";
 import Editor from "../Editor";
 import NodeMenuCategory from "./NodeMenuCategory";
 import NodeMenuItem from "./NodeMenuItem";
-import "./NodeMenuSelector.css";
+import "./NodeMenu.css";
 
-interface INodeMenuSelectorProperties {
-	editor: Editor;
+interface INodeMenuProperties {
+	editor: Editor<any>;
 }
 
-interface INodeMenuSelectorState {
+interface INodeMenuState {
 	searchResults: Map<string, Array<string>>;
 	isSearching: boolean;
 }
@@ -21,8 +21,8 @@ MENU_LAYOUT.set("Effects", []);
 MENU_LAYOUT.set("Model", []);
 MENU_LAYOUT.set("Modifiers", []);
 
-export default class NodeMenuSelector extends React.Component<INodeMenuSelectorProperties, INodeMenuSelectorState> {
-	constructor(props: INodeMenuSelectorProperties) {
+export default class NodeMenu extends React.Component<INodeMenuProperties, INodeMenuState> {
+	constructor(props: INodeMenuProperties) {
 		super(props);
 		this.state = { searchResults: MENU_LAYOUT, isSearching: false };
 	}

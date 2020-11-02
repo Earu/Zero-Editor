@@ -1,8 +1,8 @@
 import React from "react";
-import { NodeOutput } from "../../nodes/Node";
+import NodeOutput from "../../nodes/NodeOutput";
 import Graph from "./Graph";
 import "./GraphNodeOutput.css";
-import { BaseGraphNodeProperty } from "./GraphNodeProperties";
+import BaseGraphNodeProperty from "./GraphNodeProperties";
 
 interface IGraphNodeOutputProperties<T> {
 	name: string;

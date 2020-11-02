@@ -4,10 +4,10 @@ import "./Graph.css";
 import GraphControls from "./GraphControls";
 import Editor from "../Editor";
 import { Guid } from "guid-typescript";
-import { Node } from "../../nodes/Node";
+import Node from "../../nodes/Node";
 import GraphNode from "./GraphNode";
 import IPosition from "./IPosition";
-import { BaseGraphNodeProperty } from "./GraphNodeProperties";
+import BaseGraphNodeProperty from "./GraphNodeProperties";
 import GraphNodeOutput from "./GraphNodeOutput";
 
 const GRID_SIZE: number = 10000; // in px
@@ -18,7 +18,7 @@ const ZOOM_MIN: number = 0.2;
 const MOVING_FREEDOM: number = 250; // in px
 
 interface IGraphProperties {
-	editor: Editor;
+	editor: Editor<any>;
 }
 
 interface IGraphState {
@@ -50,6 +50,10 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 		this.props.editor.graph = this;
 		this._nodeTable = new Map<Guid, Node>();
 		this.state = { nodes: [] };
+	}
+
+	public get editor(): Editor<any> {
+		return this.props.editor;
 	}
 
 	public get currentZoom(): number {
