@@ -30,10 +30,16 @@ interface IEditorMenuCategory {
 	buttons: Array<IEditorMenuButton>;
 }
 
+export interface IEditorNodeCategory {
+	name: string;
+	nodeNames: Array<string>;
+}
+
 interface IEditorProperties<T extends NodeFactory> {
 	title: string;
 	factory: T;
 	menu: Array<IEditorMenuCategory>;
+	nodeCategories: Array<IEditorNodeCategory>;
 }
 
 export default class Editor<T extends NodeFactory> extends React.Component<IEditorProperties<T>> {
@@ -47,6 +53,10 @@ export default class Editor<T extends NodeFactory> extends React.Component<IEdit
 
 	public get factory(): NodeFactory {
 		return this.props.factory;
+	}
+
+	public get nodeCategories(): Array<IEditorNodeCategory> {
+		return this.props.nodeCategories;
 	}
 
 	public get graph(): Graph | null {

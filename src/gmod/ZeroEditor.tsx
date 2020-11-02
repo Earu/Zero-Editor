@@ -50,6 +50,13 @@ export default class ZeroEditor extends React.Component {
 					{ name: "Export PAC3", callback: () => {} },
 				] },
 			]}
+			nodeCategories={[
+				{ name: "Data", nodeNames: [ "Number", "Toggle", "Vector", "Angle", "Color" ] },
+				{ name: "Entity", nodeNames: [ "Model" ] },
+				{ name: "Effects", nodeNames: [] },
+				{ name: "Model", nodeNames: [] },
+				{ name: "Modifiers", nodeNames: [] },
+			]}
 		/>);
 	}
 }
