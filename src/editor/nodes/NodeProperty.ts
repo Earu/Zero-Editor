@@ -63,7 +63,7 @@ export default class NodeProperty<T> extends EventEmitter {
 			return true;
 		}
 
-		if (output.typeName === this.typeName) {
+		if (output.typeName === this.typeName && output.node.id !== this._node.id) {
 			this._linkedOutput = output;
 			this._linkedOutput.linkedProperties.push(this);
 

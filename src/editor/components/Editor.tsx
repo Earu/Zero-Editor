@@ -69,6 +69,7 @@ export default class Editor<T extends NodeFactory> extends React.Component<IEdit
 
 	private pushEvent(name: string, scheme: INodeScheme): void {
 		const ev: NodeSchemeEvent = new NodeSchemeEvent(name);
+		ev.scheme = scheme;
 		document.dispatchEvent(ev);
 	}
 
