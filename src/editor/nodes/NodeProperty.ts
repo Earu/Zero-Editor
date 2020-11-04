@@ -9,8 +9,9 @@ export default class NodeProperty<T> extends EventEmitter {
 	private _linkedOutput: NodeOutput<T>| null;
 	private _typeName: string;
 	private _userSelector: HTMLElement | null = null;
+	private coerceValue: (value: T) => T;
 
-	constructor(node: Node, name: string, typeName: string, defaultValue: T) {
+	constructor(node: Node, name: string, typeName: string, defaultValue: T, coerceValue: (value: T) => T = (value: T) => value) {
 		super();
 
 		this._node = node;
@@ -18,6 +19,7 @@ export default class NodeProperty<T> extends EventEmitter {
 		this._linkedOutput = null;
 		this._staticValue = defaultValue;
 		this._typeName = typeName;
+		this.coerceValue = coerceValue;
 	}
 
 	public set userSelector(selector: HTMLElement | null) {
@@ -41,7 +43,7 @@ export default class NodeProperty<T> extends EventEmitter {
 	}
 
 	public set staticValue(value: T) {
-		this._staticValue = value;
+		this._staticValue = this.coerceValue(value);
 	}
 
 	public get staticValue(): T {
@@ -74,7 +76,7 @@ export default class NodeProperty<T> extends EventEmitter {
 	}
 
 	public getValue(): T {
-		if (!this._linkedOutput) return this._staticValue;
-		return this._linkedOutput.value;
+		if (!this._linkedOutput) return this.coerceValue(this._staticValue);
+		return this.coerceValue(this._linkedOutput.value);
 	}
 }

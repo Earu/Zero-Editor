@@ -5,10 +5,10 @@ export default class Color {
 	private _alpha: number;
 
 	constructor(r: number, g: number, b: number, a: number = 255) {
-		this._red = r % 256;
-		this._green = g % 256;
-		this._blue = b % 256;
-		this._alpha = a % 256;
+		this._red = r;
+		this._green = g;
+		this._blue = b;
+		this._alpha = a;
 	}
 
 	public get red(): number {
