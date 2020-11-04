@@ -7,9 +7,13 @@ import Angle from "../types/Angle";
 export default class AngleNode extends SingleOutputNode<Angle>{
 	constructor(editor: Editor<GmodNodeFactory>, value: Angle) {
 		super (editor, "Angle", value);
-		this.properties.set("roll", new NodeProperty<number>(this, "roll", "Number", value.roll));
-		this.properties.set("pitch", new NodeProperty<number>(this, "pitch", "Number", value.pitch));
-		this.properties.set("yaw", new NodeProperty<number>(this, "yaw", "Number", value.yaw));
+		this.properties.set("roll", new NodeProperty<number>(this, "roll", "Number", value.roll, this.coerceValue));
+		this.properties.set("pitch", new NodeProperty<number>(this, "pitch", "Number", value.pitch, this.coerceValue));
+		this.properties.set("yaw", new NodeProperty<number>(this, "yaw", "Number", value.yaw, this.coerceValue));
+	}
+
+	public coerceValue(n: number): number {
+		return Math.max(Math.min(n, 360), -360);
 	}
 
 	public updateOutputs(): void {

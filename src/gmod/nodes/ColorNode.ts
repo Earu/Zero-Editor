@@ -7,10 +7,14 @@ import Color from "../types/Color";
 export default class ColorNode extends SingleOutputNode<Color> {
 	constructor(editor: Editor<GmodNodeFactory>, value: Color) {
 		super (editor, "Color", value);
-		this.properties.set("red", new NodeProperty<number>(this, "red", "Number", value.red));
-		this.properties.set("green", new NodeProperty<number>(this, "green", "Number", value.green));
-		this.properties.set("blue", new NodeProperty<number>(this, "blue", "Number", value.blue));
-		this.properties.set("alpha", new NodeProperty<number>(this, "alpha", "Number", value.alpha));
+		this.properties.set("red", new NodeProperty<number>(this, "red", "Number", value.red, this.coerceValue));
+		this.properties.set("green", new NodeProperty<number>(this, "green", "Number", value.green, this.coerceValue));
+		this.properties.set("blue", new NodeProperty<number>(this, "blue", "Number", value.blue, this.coerceValue));
+		this.properties.set("alpha", new NodeProperty<number>(this, "alpha", "Number", value.alpha, this.coerceValue));
+	}
+
+	public coerceValue(n: number): number {
+		return Math.max(Math.min(n, 255), -255);
 	}
 
 	public updateOutputs(): void {
