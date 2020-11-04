@@ -10,13 +10,19 @@ interface INodeScheme {
 	value: string;
 }
 
-class NodeSchemeEvent extends Event {
-	private _scheme: INodeScheme | null = null;
-	public set scheme(scheme: INodeScheme | null) {
+export class NodeSchemeEvent extends Event {
+	private _scheme: INodeScheme;
+
+	constructor(name: string, scheme: INodeScheme) {
+		super(name);
 		this._scheme = scheme;
 	}
 
-	public get scheme(): INodeScheme | null {
+	public set scheme(scheme: INodeScheme) {
+		this._scheme = scheme;
+	}
+
+	public get scheme(): INodeScheme{
 		return this._scheme;
 	}
 }
@@ -42,13 +48,20 @@ interface IEditorProperties<T extends NodeFactory> {
 	nodeCategories: Array<IEditorNodeCategory>;
 }
 
-export default class Editor<T extends NodeFactory> extends React.Component<IEditorProperties<T>> {
+interface IEditorState {
+	currentProjectName: string | null;
+}
+
+export default class Editor<T extends NodeFactory> extends React.Component<IEditorProperties<T>, IEditorState> {
 	private _graph: Graph | null;
 
 	constructor(props: any) {
 		super(props);
 		this._graph = null;
 		this.props.factory.editor = this;
+		this.state = {
+			currentProjectName: null
+		}
 	}
 
 	public get factory(): NodeFactory {
@@ -68,9 +81,7 @@ export default class Editor<T extends NodeFactory> extends React.Component<IEdit
 	}
 
 	private pushEvent(name: string, scheme: INodeScheme): void {
-		const ev: NodeSchemeEvent = new NodeSchemeEvent(name);
-		ev.scheme = scheme;
-		document.dispatchEvent(ev);
+		document.dispatchEvent(new NodeSchemeEvent(name, scheme));
 	}
 
 	// load a json scheme into our node scheme
@@ -79,7 +90,15 @@ export default class Editor<T extends NodeFactory> extends React.Component<IEdit
 	}
 
 	private resetGraph(): void {
-		this._graph?.reset();
+		if (!this._graph) return;
+
+		if (this._graph.nodeTable.size > 0) {
+			if (!window.confirm("You have unsaved changes, are you sure you want to reset the graph?")) {
+				return;
+			}
+		}
+
+		this._graph.reset();
 	}
 
 	private onLoadProject(): void {
@@ -92,12 +111,20 @@ export default class Editor<T extends NodeFactory> extends React.Component<IEdit
 	private onSave(): void {
 		if (!this._graph) return;
 
+		if (this.state.currentProjectName === null) {
+			const projectName: string | null = window.prompt("Enter a name for your project");
+			if (!projectName) return;
+
+			this.setState({ currentProjectName: projectName })
+		}
+
+
 		const jsonNodes: Array<IJsonNode> = [];
 		for (const [, node] of this._graph.nodeTable) {
 			jsonNodes.push(node.toJson());
 		}
 
-		const json = JSON.stringify(jsonNodes);
+		const json: string = JSON.stringify(jsonNodes);
 		this.pushEvent("editorSave", { editor: this, value: json });
 	}
 
@@ -127,7 +154,8 @@ export default class Editor<T extends NodeFactory> extends React.Component<IEdit
 					<button onClick={this.resetGraph.bind(this)}>Reset Graph</button>
 				</div>
 				{this.renderMenu()}
-			<h1>{this.props.title}</h1>
+				<span>{this.state.currentProjectName === null ? "Unknown" : this.state.currentProjectName}</span>
+				<h1>{this.props.title}</h1>
 			</div>
 			<NodeMenu editor={this} />
 			<Graph editor={this}/>

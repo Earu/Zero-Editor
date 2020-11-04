@@ -27,6 +27,15 @@
 	user-select: none;
 }
 
+#editor-menu>span {
+	color: white;
+	font-size: 18px;
+	position: fixed;
+	width: 100%;
+	top: 13px;
+	left: 50%;
+}
+
 #editor-menu>div {
 	display: inline-block;
 	margin-left: 10px;
