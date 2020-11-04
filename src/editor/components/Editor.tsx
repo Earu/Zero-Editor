@@ -101,6 +101,10 @@ export default class Editor<T extends NodeFactory> extends React.Component<IEdit
 		this.pushEvent("editorSave", { editor: this, value: json });
 	}
 
+	private onContextMenu(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+		event.preventDefault();
+	}
+
 	private renderMenu(): Array<JSX.Element> {
 		const categories: Array<JSX.Element> = [];
 		let i: number = 0;
@@ -115,7 +119,7 @@ export default class Editor<T extends NodeFactory> extends React.Component<IEdit
 	}
 
 	public render(): JSX.Element {
-		return (<div id="editor">
+		return (<div id="editor" onContextMenu={this.onContextMenu}>
 			<div id="editor-menu">
 				<div>
 					<button onClick={this.onLoadProject.bind(this)}>Load Project</button>
