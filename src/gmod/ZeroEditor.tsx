@@ -1,5 +1,5 @@
 import React from "react";
-import Editor from "../editor/components/Editor";
+import Editor, { NodeSchemeEvent } from "../editor/components/Editor";
 import { FileExplorerEvent } from "./GmodInterface";
 import GmodNodeFactory from "./GmodNodeFactory";
 
@@ -25,12 +25,14 @@ class BaseZeroEditor extends Editor<GmodNodeFactory> {
 	}
 
 	public componentDidMount() {
-		document.addEventListener("editorLoad", scheme => {
-			console.log(scheme);
+		document.addEventListener("editorLoad", (event: Event) => {
+			const schemeEvent: NodeSchemeEvent = event as NodeSchemeEvent;
+			console.log(schemeEvent.scheme.editor.state.currentProjectName);
 		});
 
-		document.addEventListener("editorSave", scheme => {
-			console.log(scheme);
+		document.addEventListener("editorSave", (event: Event) => {
+			const schemeEvent: NodeSchemeEvent = event as NodeSchemeEvent;
+			console.log(schemeEvent.scheme.editor.state.currentProjectName);
 		});
 
 		document.addEventListener("fileExplorerClosed", (ev: Event) => {
