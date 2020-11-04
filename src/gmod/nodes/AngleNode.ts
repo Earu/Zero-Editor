@@ -13,7 +13,7 @@ export default class AngleNode extends SingleOutputNode<Angle>{
 	}
 
 	public coerceValue(n: number): number {
-		return Math.max(Math.min(n, 360), -360);
+		return n % 180;
 	}
 
 	public updateOutputs(): void {
