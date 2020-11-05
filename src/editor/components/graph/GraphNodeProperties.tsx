@@ -29,8 +29,8 @@ export default class BaseGraphNodeProperty<T> extends React.Component<IGraphNode
 			const output = this.props.graph.selectedGraphNodeIO.props.output;
 			if (this.props.property.trySetLinkedOutput(output)) {
 				this.props.property.userSelector?.classList.add("linked");
-				this.props.property.emit("update");
 				output.userSelector?.classList.add("linked");
+				this.props.property.emit("update");
 			}
 
 			this.props.graph.selectedGraphNodeIO = null;
