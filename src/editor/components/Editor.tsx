@@ -4,9 +4,12 @@ import Graph from "./graph/Graph";
 import "./Editor.css";
 import NodeFactory from "../nodes/NodeFactory";
 import { IJsonNode } from "../nodes/JsonNode";
+import EditorModal from "./EditorModal";
+
+const DEFAULT_PROJECT_NAME: string = "Unknown Project";
 
 interface INodeScheme {
-	editor: Editor<any>;
+	editor: Editor<NodeFactory>;
 	value: string;
 }
 
@@ -50,17 +53,29 @@ interface IEditorProperties<T extends NodeFactory> {
 
 interface IEditorState {
 	currentProjectName: string | null;
+	showPrompt: boolean;
+	promptTitle: string;
+	promptMessage: string;
+	showPromptInput: boolean;
+	promptConfirm: (input: string | null) => void;
 }
 
 export default class Editor<T extends NodeFactory> extends React.Component<IEditorProperties<T>, IEditorState> {
 	private _graph: Graph | null;
+	private promptInput: React.RefObject<HTMLInputElement>;
 
 	constructor(props: any) {
 		super(props);
 		this._graph = null;
+		this.promptInput = React.createRef();
 		this.props.factory.editor = this;
 		this.state = {
-			currentProjectName: null
+			currentProjectName: null,
+			showPrompt: false,
+			promptTitle: "",
+			promptMessage: "",
+			showPromptInput: false,
+			promptConfirm: () => {},
 		}
 	}
 
@@ -80,6 +95,17 @@ export default class Editor<T extends NodeFactory> extends React.Component<IEdit
 		this._graph = graph;
 	}
 
+	private prompt(title: string, message: string, input: boolean, confirm: (input: string | null) => void): void {
+		this.setState({
+			currentProjectName: this.state.currentProjectName,
+			showPrompt: true,
+			promptTitle: title,
+			promptMessage: message,
+			showPromptInput: input,
+			promptConfirm: confirm,
+		})
+	}
+
 	private pushEvent(name: string, scheme: INodeScheme): void {
 		document.dispatchEvent(new NodeSchemeEvent(name, scheme));
 	}
@@ -93,12 +119,33 @@ export default class Editor<T extends NodeFactory> extends React.Component<IEdit
 		if (!this._graph) return;
 
 		if (this._graph.nodeTable.size > 0) {
-			if (!window.confirm("You have unsaved changes, are you sure you want to reset the graph?")) {
-				return;
-			}
+			this.prompt("Reset Graph", "Are you sure that you want to reset the graph?", false, () => {
+				const state: IEditorState = this.state;
+				state.currentProjectName = null;
+				this.setState(state);
+
+				this._graph?.reset();
+			});
+			return;
 		}
 
+		const state: IEditorState = this.state;
+		state.currentProjectName = null;
+		this.setState(state);
+
 		this._graph.reset();
+	}
+
+	// scompile our graph scheme to json
+	private compileGraph(): string {
+		if (!this._graph) return "";
+
+		const jsonNodes: Array<IJsonNode> = [];
+		for (const [, node] of this._graph.nodeTable) {
+			jsonNodes.push(node.toJson());
+		}
+
+		return JSON.stringify(jsonNodes);
 	}
 
 	private onLoadProject(): void {
@@ -107,29 +154,49 @@ export default class Editor<T extends NodeFactory> extends React.Component<IEdit
 		this.load(scheme.value);
 	}
 
-	// save our node scheme to an appropriate json scheme
 	private onSave(): void {
-		if (!this._graph) return;
-
 		if (this.state.currentProjectName === null) {
-			const projectName: string | null = window.prompt("Enter a name for your project");
-			if (!projectName) return;
+			this.prompt("Project Name", "Enter a name for your project", true, (projectName: string | null) => {
+				if (!projectName) return;
+				if (projectName.trim() === "") {
+					projectName = DEFAULT_PROJECT_NAME;
+				}
 
-			this.setState({ currentProjectName: projectName })
+				const state: IEditorState = this.state;
+				state.currentProjectName = projectName;
+				this.setState(state);
+
+				const json = this.compileGraph();
+				this.pushEvent("editorSave", { editor: this, value: json });
+			});
 		}
 
-
-		const jsonNodes: Array<IJsonNode> = [];
-		for (const [, node] of this._graph.nodeTable) {
-			jsonNodes.push(node.toJson());
-		}
-
-		const json: string = JSON.stringify(jsonNodes);
+		const json = this.compileGraph();
 		this.pushEvent("editorSave", { editor: this, value: json });
 	}
 
 	private onContextMenu(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
 		event.preventDefault();
+	}
+
+	private onPromptConfirm(): void {
+		if (this.promptInput.current) {
+			if (this.state.showPromptInput) {
+				this.state.promptConfirm(this.promptInput.current.value);
+			} else {
+				this.state.promptConfirm(null);
+			}
+
+			const state: IEditorState = this.state;
+			state.showPrompt = false;
+			this.setState(state);
+		}
+	}
+
+	private onPromptClose(): void {
+		const state: IEditorState = this.state;
+		state.showPrompt = false;
+		this.setState(state);
 	}
 
 	private renderMenu(): Array<JSX.Element> {
@@ -147,6 +214,13 @@ export default class Editor<T extends NodeFactory> extends React.Component<IEdit
 
 	public render(): JSX.Element {
 		return (<div id="editor" onContextMenu={this.onContextMenu}>
+			<EditorModal title={this.state.promptTitle} message={this.state.promptMessage} onClose={this.onPromptClose.bind(this)} style={{ display: this.state.showPrompt ? "block" : "none" }}>
+				<input className="editor-prompt-input" type="text" placeholder="type here..." style={{ display: this.state.showPromptInput ? "block" : "none" }} ref={this.promptInput} />
+				<div style={{ display: "inline-block", margin: "auto" }}>
+					<button className="editor-prompt-btn" onClick={this.onPromptConfirm.bind(this)}>Ok</button>
+					<button className="editor-prompt-btn" onClick={this.onPromptClose.bind(this)}>Cancel</button>
+				</div>
+			</EditorModal>
 			<div id="editor-menu">
 				<div>
 					<button onClick={this.onLoadProject.bind(this)}>Load Project</button>
@@ -154,7 +228,7 @@ export default class Editor<T extends NodeFactory> extends React.Component<IEdit
 					<button onClick={this.resetGraph.bind(this)}>Reset Graph</button>
 				</div>
 				{this.renderMenu()}
-				<span>{this.state.currentProjectName === null ? "Unknown" : this.state.currentProjectName}</span>
+				<span>{this.state.currentProjectName === null ? DEFAULT_PROJECT_NAME : this.state.currentProjectName}</span>
 				<h1>{this.props.title}</h1>
 			</div>
 			<NodeMenu editor={this} />

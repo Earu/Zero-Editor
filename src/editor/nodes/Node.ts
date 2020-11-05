@@ -1,13 +1,14 @@
 import { Guid } from "guid-typescript";
 import Editor from "../components/Editor";
 import { IJsonNode, IJsonOutput, IJsonProperty } from "./JsonNode";
+import NodeFactory from "./NodeFactory";
 import NodeOutput from "./NodeOutput";
 import NodeProperty from "./NodeProperty";
 
 const DEFAULT_NODE_WIDTH: number = 125;
 
 export default class Node {
-	private _editor: Editor<any>;
+	private _editor: Editor<NodeFactory>;
 	private _id: Guid;
 
 	private _x: number;
@@ -18,7 +19,7 @@ export default class Node {
 	private _properties: Map<string, NodeProperty<any>>;
 	private _outputs: Map<string, NodeOutput<any>>;
 
-	constructor(editor: Editor<any>, name: string) {
+	constructor(editor: Editor<NodeFactory>, name: string) {
 		this._id = Guid.create();
 		this._editor = editor;
 		this._x = 0;
@@ -64,7 +65,7 @@ export default class Node {
 		this._id = id;
 	}
 
-	public get editor(): Editor<any> {
+	public get editor(): Editor<NodeFactory> {
 		return this._editor;
 	}
 

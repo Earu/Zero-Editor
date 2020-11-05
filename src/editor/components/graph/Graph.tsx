@@ -9,6 +9,7 @@ import GraphNode from "./GraphNode";
 import IPosition from "./IPosition";
 import BaseGraphNodeProperty from "./GraphNodeProperties";
 import GraphNodeOutput from "./GraphNodeOutput";
+import NodeFactory from "../../nodes/NodeFactory";
 
 const GRID_SIZE: number = 10000; // in px
 const GRID_SIZE_HALF: number = 5000; // in px
@@ -18,7 +19,7 @@ const ZOOM_MIN: number = 0.2;
 const MOVING_FREEDOM: number = 250; // in px
 
 interface IGraphProperties {
-	editor: Editor<any>;
+	editor: Editor<NodeFactory>;
 }
 
 interface IGraphState {
@@ -52,7 +53,7 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 		this.state = { nodes: [] };
 	}
 
-	public get editor(): Editor<any> {
+	public get editor(): Editor<NodeFactory> {
 		return this.props.editor;
 	}
 
