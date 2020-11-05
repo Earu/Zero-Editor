@@ -27,12 +27,12 @@ class BaseZeroEditor extends Editor<GmodNodeFactory> {
 	public componentDidMount() {
 		document.addEventListener("editorLoad", (event: Event) => {
 			const schemeEvent: NodeSchemeEvent = event as NodeSchemeEvent;
-			console.log(schemeEvent.scheme.editor.state.currentProjectName);
+			console.debug(schemeEvent.scheme.editor.state.currentProjectName);
 		});
 
 		document.addEventListener("editorSave", (event: Event) => {
 			const schemeEvent: NodeSchemeEvent = event as NodeSchemeEvent;
-			console.log(schemeEvent.scheme.editor.state.currentProjectName);
+			console.debug(schemeEvent.scheme.editor.state.currentProjectName);
 		});
 
 		document.addEventListener("fileExplorerClosed", (ev: Event) => {

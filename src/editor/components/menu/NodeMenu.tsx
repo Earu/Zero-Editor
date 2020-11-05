@@ -3,9 +3,10 @@ import Editor, { IEditorNodeCategory } from "../Editor";
 import NodeMenuCategory from "./NodeMenuCategory";
 import NodeMenuItem from "./NodeMenuItem";
 import "./NodeMenu.css";
+import NodeFactory from "../../nodes/NodeFactory";
 
 interface INodeMenuProperties {
-	editor: Editor<any>;
+	editor: Editor<NodeFactory>;
 }
 
 interface INodeMenuState {
