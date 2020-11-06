@@ -54,6 +54,38 @@ export default class NodeProperty<T> extends EventEmitter {
 		return this._linkedOutput;
 	}
 
+	private outputExistsLaterInBranch(output: NodeOutput<T>): boolean {
+
+		// Wew lads this is gonna be a doozy
+		const nodeCheckStack: Node[] = [this.node];
+		const branchingNodes: Node[] = [];
+
+		while (nodeCheckStack.length > 0) {
+
+			const checkingNode = nodeCheckStack.pop();
+			if (!checkingNode) continue;
+
+			branchingNodes.push(checkingNode);
+
+			for (const [, checkingNodeOutput] of checkingNode.outputs) {
+				if (!checkingNodeOutput.linkedProperties) continue;
+
+				for (const linkedProperty of checkingNodeOutput.linkedProperties) {
+
+					nodeCheckStack.push(linkedProperty.node);
+
+				}
+			}
+
+		}
+
+		for (const node of branchingNodes) {
+			if (output.node === node) return true;
+		}
+
+		return false;
+	}
+
 	public trySetLinkedOutput(output: NodeOutput<T> | null): boolean {
 		if (!output) {
 			if (this._linkedOutput) {
@@ -66,10 +98,14 @@ export default class NodeProperty<T> extends EventEmitter {
 		}
 
 		if (output.typeName === this.typeName && output.node.id !== this._node.id) {
-			this._linkedOutput = output;
-			this._linkedOutput.linkedProperties.push(this);
+			
+			if (!this.outputExistsLaterInBranch(output)) {
+				this._linkedOutput = output;
+				this._linkedOutput.linkedProperties.push(this);
+				return true;
+			}
 
-			return true;
+			return false;
 		}
 
 		return false;
