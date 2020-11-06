@@ -55,25 +55,20 @@ export default class NodeProperty<T> extends EventEmitter {
 	}
 
 	private outputExistsLaterInBranch(output: NodeOutput<T>): boolean {
-
 		// Wew lads this is gonna be a doozy
-		const nodeCheckStack: Node[] = [this.node];
+		const nodeCheckStack: Node[] = [ this.node ];
 		const branchingNodes: Node[] = [];
 
 		while (nodeCheckStack.length > 0) {
-
 			const checkingNode = nodeCheckStack.pop();
 			if (!checkingNode) continue;
 
 			branchingNodes.push(checkingNode);
-
 			for (const [, checkingNodeOutput] of checkingNode.outputs) {
 				if (!checkingNodeOutput.linkedProperties) continue;
 
 				for (const linkedProperty of checkingNodeOutput.linkedProperties) {
-
 					nodeCheckStack.push(linkedProperty.node);
-
 				}
 			}
 
@@ -98,7 +93,6 @@ export default class NodeProperty<T> extends EventEmitter {
 		}
 
 		if (output.typeName === this.typeName && output.node.id !== this._node.id) {
-			
 			if (!this.outputExistsLaterInBranch(output)) {
 				this._linkedOutput = output;
 				this._linkedOutput.linkedProperties.push(this);

@@ -62,4 +62,16 @@ export default class BaseGraphNodeProperty<T> extends React.Component<IGraphNode
 		if (!this._userSelectionRef) return;
 		this.props.property.userSelector = this._userSelectionRef.current;
 	}
+
+	public componentWillUnmount(): void {
+		// only remove the style for the output selector if we know its not linked to any property
+		const linkedOutput = this.props.property.linkedOutput;
+		if (linkedOutput && linkedOutput.linkedProperties.length === 1) {
+			linkedOutput.userSelector?.classList.remove("linked");
+		}
+
+		this.props.property.userSelector?.classList.remove("linked");
+		this.props.property.trySetLinkedOutput(null);
+		this.props.property.emit("update");
+	}
 }
