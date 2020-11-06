@@ -1,0 +1,33 @@
+.graph-node-property-checkbox-label {
+	position: relative;
+	top: -2px;
+	left: 2px;
+}
+
+.graph-node-property-text-input {
+	background-color: rgba(0, 0, 0, 0.75);
+	border: solid 2px rgba(0, 0, 0, 0.75);
+	color: white;
+	width: calc(100% - 6px);
+}
+
+.graph-node-property-text-input:focus {
+	border: solid 2px #494949;
+}
+
+.graph-node-property-color-input {
+	background-color: rgba(0, 0, 0, 0.75);
+	border: solid 2px rgba(0, 0, 0, 0.75);
+	color: white;
+	width: 23px;
+}
+
+.graph-node-property-color-input-label {
+	display: inline-block;
+	text-align: center;
+	width: 28px;
+}
+
+.graph-node-property-color-input:focus {
+	border: solid 2px #494949;
+}

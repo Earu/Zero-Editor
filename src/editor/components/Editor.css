@@ -30,10 +30,12 @@
 #editor-menu>span {
 	color: white;
 	font-size: 18px;
+	display: block;
 	position: fixed;
-	width: 100%;
+	width: 100vw;
 	top: 13px;
-	left: 50%;
+	text-align: center;
+	pointer-events: none;
 }
 
 #editor-menu>div {

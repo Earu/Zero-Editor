@@ -107,7 +107,7 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 				</div>
 			<div className="content">
 				{this.renderProperties()}
-				<hr />
+				{this.props.node.outputs.size > 0 ? <hr /> : <div />}
 				{this.renderOutputs()}
 			</div>
 		</div>);
