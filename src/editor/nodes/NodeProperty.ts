@@ -79,8 +79,6 @@ export default class NodeProperty<T> extends EventEmitter {
 
 		}
 
-		console.log(branchingNodes);
-
 		for (const node of branchingNodes) {
 			if (output.node === node) return true;
 		}
@@ -102,7 +100,6 @@ export default class NodeProperty<T> extends EventEmitter {
 		if (output.typeName === this.typeName && output.node.id !== this._node.id) {
 			
 			if (!this.outputExistsLaterInBranch(output)) {
-				console.log("yes");
 				this._linkedOutput = output;
 				this._linkedOutput.linkedProperties.push(this);
 				return true;
