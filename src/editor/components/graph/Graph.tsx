@@ -311,8 +311,6 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 		context.strokeStyle = "#eeeeee";
 		context.lineWidth = 3 * this._currentZoom;
 
-		const bezierOffset = 150 * this._currentZoom;
-
 		if (this._selectedGraphNodeIO) {
 			const selector: HTMLElement | null = (this._selectedGraphNodeIO instanceof BaseGraphNodeProperty) ?
 				this._selectedGraphNodeIO.props.property.userSelector :
@@ -339,6 +337,8 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 					const propertyY = (propertyRect.top + propertyRect.bottom) / 2;
 					const outputX = (outputRect.left + outputRect.right) / 2;
 					const outputY = (outputRect.top + outputRect.bottom) / 2;
+
+					const bezierOffset = Math.abs(propertyX - outputX) / (outputX < propertyX ? 2 : 1);
 
 					context.beginPath();
 					context.moveTo(propertyX, propertyY);
