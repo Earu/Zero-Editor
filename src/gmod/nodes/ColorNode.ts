@@ -1,6 +1,6 @@
 import Editor from "../../editor/components/Editor";
 import NodeProperty from "../../editor/nodes/NodeProperty";
-import SingleOutputNode from "../../editor/nodes/SingleOutputNodes";
+import SingleOutputNode from "../../editor/nodes/SingleOutputNode";
 import GmodNodeFactory from "../GmodNodeFactory";
 import Color from "../types/Color";
 
