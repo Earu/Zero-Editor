@@ -47,6 +47,15 @@ export default class GraphNodeOutput<T> extends React.Component<IGraphNodeOutput
 		this.props.output.userSelector = this._userSelectionRef.current;
 	}
 
+	public componentWillUnmount(): void {
+		this.props.output.userSelector?.classList.remove("linked");
+		for (const linkedProperty of this.props.output.linkedProperties) {
+			linkedProperty.userSelector?.classList.remove("linked");
+			linkedProperty.trySetLinkedOutput(null);
+			linkedProperty.emit("update");
+		}
+	}
+
 	public render(): JSX.Element {
 		return (<div className="graph-node-output" onMouseDown={this.onMouseDown.bind(this)} onMouseUp={this.onMouseUp.bind(this)}>
 			<span>{this.props.name}</span>
