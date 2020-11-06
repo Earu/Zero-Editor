@@ -7,6 +7,7 @@ export default class GraphNodeColorProperty extends BaseGraphNodeProperty<Color>
 	private inputGreen: React.RefObject<HTMLInputElement>;
 	private inputBlue: React.RefObject<HTMLInputElement>;
 	private inputAlpha: React.RefObject<HTMLInputElement>;
+	private colorPreview: React.RefObject<HTMLDivElement>;
 
 	constructor(props: any) {
 		super(props);
@@ -14,6 +15,7 @@ export default class GraphNodeColorProperty extends BaseGraphNodeProperty<Color>
 		this.inputGreen = React.createRef();
 		this.inputBlue = React.createRef();
 		this.inputAlpha = React.createRef();
+		this.colorPreview = React.createRef();
 	}
 
 	protected update(): void {
@@ -40,6 +42,10 @@ export default class GraphNodeColorProperty extends BaseGraphNodeProperty<Color>
 			this.inputAlpha.current.disabled = isLinked;
 		}
 
+		if (this.colorPreview.current) {
+			this.colorPreview.current.style.borderBottom = `1px solid rgba(${value.red},${value.green},${value.blue},${value.alpha/255})`;
+		}
+
 		this.updateNodeOutput();
 	}
 
@@ -59,6 +65,10 @@ export default class GraphNodeColorProperty extends BaseGraphNodeProperty<Color>
 			isNaN(alpha) ? oldColor.alpha : alpha
 		);
 
+		if (this.colorPreview.current) {
+			this.colorPreview.current.style.borderBottom = `1px solid rgba(${red},${green},${blue},${alpha/255})`;
+		}
+
 		this.props.node.updateOutputs();
 	}
 
@@ -66,15 +76,17 @@ export default class GraphNodeColorProperty extends BaseGraphNodeProperty<Color>
 		return (<div className="graph-node-property" onMouseUp={this.onMouseUp.bind(this)} >
 			<div className="user-selection" ref={this._userSelectionRef} onMouseDown={this.onMouseDown.bind(this)} />
 			<div>{this.props.name}</div>
-			<label htmlFor={`${this.props.id}_red`}>Red</label>
-			<input className="graph-node-property-text-input" id={`${this.props.id}_red`} type="text" min={0} max={255}
-				placeholder={this.props.name} defaultValue={this.props.property.getValue().red} onChange={this.updateNodeOutput.bind(this)} />
-			<label htmlFor={`${this.props.id}_green`}>Green</label>
-			<input className="graph-node-property-text-input" id={`${this.props.id}_green`} type="text" min={0} max={255}
-				placeholder={this.props.name} defaultValue={this.props.property.getValue().green} onChange={this.updateNodeOutput.bind(this)} />
-			<label htmlFor={`${this.props.id}_blue`}>Blue</label>
-			<input className="graph-node-property-text-input" id={`${this.props.id}_blue`} type="text" min={0} max={255}
-				placeholder={this.props.name} defaultValue={this.props.property.getValue().blue} onChange={this.updateNodeOutput.bind(this)} />
+			<div style={{ display: "inline-block", borderBottom: "1px solid white" }} ref={this.colorPreview}>
+				<input className="graph-node-property-color-input" type="text" min={0} max={255} placeholder={this.props.name}
+					defaultValue={this.props.property.getValue().red} onChange={this.updateNodeOutput.bind(this)} ref={this.inputRed} />
+				<input className="graph-node-property-color-input" type="text" min={0} max={255} placeholder={this.props.name}
+					defaultValue={this.props.property.getValue().green} onChange={this.updateNodeOutput.bind(this)} ref={this.inputGreen} />
+				<input className="graph-node-property-color-input" type="text" min={0} max={255} placeholder={this.props.name}
+					defaultValue={this.props.property.getValue().blue} onChange={this.updateNodeOutput.bind(this)} ref={this.inputBlue} />
+				<input className="graph-node-property-color-input" type="text" min={0} max={255} placeholder={this.props.name}
+					defaultValue={this.props.property.getValue().blue} onChange={this.updateNodeOutput.bind(this)} ref={this.inputAlpha} />
+				<div className="graph-node-property-color-preview" />
+			</div>
 		</div>);
 	}
 }

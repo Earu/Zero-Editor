@@ -2,6 +2,7 @@ import React from "react";
 import Editor, { NodeSchemeEvent } from "../editor/components/Editor";
 import { FileExplorerEvent } from "./GmodInterface";
 import GmodNodeFactory from "./GmodNodeFactory";
+import "./graph/GraphNodeProperty.css";
 
 class BaseZeroEditor extends Editor<GmodNodeFactory> {
 	private currentExplorerCallbackId: number;
@@ -53,7 +54,7 @@ export default class ZeroEditor extends React.Component {
 				] },
 			]}
 			nodeCategories={[
-				{ name: "Data", nodeNames: [ "Number", "Toggle", "Vector", "Angle", "Color" ] },
+				{ name: "Data", nodeNames: [ "Number", "Text", "Toggle", "Vector", "Angle", "Color" ] },
 				{ name: "Entity", nodeNames: [ "Model" ] },
 				{ name: "Effects", nodeNames: [] },
 				{ name: "Model", nodeNames: [] },
