@@ -35,6 +35,12 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 		this.props.graph.isMoveable = true;
 	}
 
+	private onKeyDown(event: KeyboardEvent) {
+		if (event.key === "Escape" || event.which === 27) {
+			this.onMouseUp();
+		}
+	}
+
 	private onMouseMove(event: MouseEvent): void {
 		if (this.props.graph.selectedGraphNode !== this) return;
 
@@ -58,6 +64,8 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 		if (graph) {
 			graph.addEventListener("mousemove", this.onMouseMove.bind(this));
 		}
+
+		document.body.addEventListener("keydown", this.onKeyDown.bind(this));
 	}
 
 	public componentWillUnmount(): void {
@@ -65,6 +73,8 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 		if (graph) {
 			graph.removeEventListener("mousemove", this.onMouseMove);
 		}
+
+		document.body.addEventListener("keydown", this.onKeyDown);
 	}
 
 	private renderProperties(): Array<JSX.Element> {
