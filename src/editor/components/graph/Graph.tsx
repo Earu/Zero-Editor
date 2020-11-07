@@ -220,7 +220,7 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 		this.moveable = true;
 	}
 
-	private graphMouseLeave(event: React.MouseEvent): void {
+	private graphMouseLeave(): void {
 		if (!this._selectedGraphNodeIO) return;
 		this._selectedGraphNodeIO = null;
 		this.moveable = true;
