@@ -25,21 +25,22 @@ export default class BaseGraphNodeProperty<T> extends React.Component<IGraphNode
 	protected update(): void {}
 
 	protected onMouseUp(): void {
-		if (this.props.graph.selectedGraphNodeIO instanceof GraphNodeOutput) {
-			const output = this.props.graph.selectedGraphNodeIO.props.output;
+		const graph: Graph = this.props.graph;
+		if (graph.selectionService.selectedGraphNodeIO instanceof GraphNodeOutput) {
+			const output = graph.selectionService.selectedGraphNodeIO.props.output;
 			if (this.props.property.trySetLinkedOutput(output)) {
 				this.props.property.userSelector?.classList.add("linked");
 				output.userSelector?.classList.add("linked");
 				this.props.property.emit("update");
 			}
 
-			this.props.graph.selectedGraphNodeIO = null;
-			this.props.graph.isMoveable = true;
+			graph.selectionService.selectedGraphNodeIO = null;
+			graph.selectionService.isGraphMoveable = true;
 		}
 
-		if (this.props.graph.selectedGraphNodeIO === this) {
-			this.props.graph.selectedGraphNodeIO = null;
-			this.props.graph.isMoveable = true;
+		if (graph.selectionService.selectedGraphNodeIO === this) {
+			graph.selectionService.selectedGraphNodeIO = null;
+			graph.selectionService.isGraphMoveable = true;
 		}
 	}
 
@@ -54,8 +55,8 @@ export default class BaseGraphNodeProperty<T> extends React.Component<IGraphNode
 
 		this.props.property.trySetLinkedOutput(null);
 		this.props.property.emit("update");
-		this.props.graph.selectedGraphNodeIO = this;
-		this.props.graph.isMoveable = false;
+		this.props.graph.selectionService.selectedGraphNodeIO = this;
+		this.props.graph.selectionService.isGraphMoveable = false;
 	}
 
 	public componentDidMount(): void {

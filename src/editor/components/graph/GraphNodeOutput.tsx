@@ -19,26 +19,27 @@ export default class GraphNodeOutput<T> extends React.Component<IGraphNodeOutput
 	}
 
 	private onMouseDown(): void {
-		this.props.graph.selectedGraphNodeIO = this;
-		this.props.graph.isMoveable = false;
+		this.props.graph.selectionService.selectedGraphNodeIO = this;
+		this.props.graph.selectionService.isGraphMoveable = false;
 	}
 
 	private onMouseUp(): void {
-		if (this.props.graph.selectedGraphNodeIO instanceof BaseGraphNodeProperty) {
-			const property = this.props.graph.selectedGraphNodeIO.props.property;
+		const graph: Graph = this.props.graph;
+		if (graph.selectionService.selectedGraphNodeIO instanceof BaseGraphNodeProperty) {
+			const property = graph.selectionService.selectedGraphNodeIO.props.property;
 			if (property.trySetLinkedOutput(this.props.output)) {
 				property.userSelector?.classList.add("linked");
 				this.props.output.userSelector?.classList.add("linked");
 				property.emit("update");
 			}
 
-			this.props.graph.selectedGraphNodeIO = null;
-			this.props.graph.isMoveable = true;
+			graph.selectionService.selectedGraphNodeIO = null;
+			graph.selectionService.isGraphMoveable = true;
 		}
 
-		if (this.props.graph.selectedGraphNodeIO === this) {
-			this.props.graph.selectedGraphNodeIO = null;
-			this.props.graph.isMoveable = true;
+		if (graph.selectionService.selectedGraphNodeIO === this) {
+			graph.selectionService.selectedGraphNodeIO = null;
+			graph.selectionService.isGraphMoveable = true;
 		}
 	}
 
