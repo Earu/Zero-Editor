@@ -43,33 +43,36 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 		this.offsetY = event.pageY - screenPos.y;
 		this.offsetZoom = zoom;
 
-		this.props.graph.selectionState.selectGraphNode(this);
+		this.props.graph.selectionState.draggedGraphNode = this;
 		this.props.graph.selectionState.isGraphMoveable = false;
 	}
 
 	private onMouseUp(): void {
-		if (!this.props.graph.selectionState.isGraphNodeSelected(this)) return;
+		if (this.props.graph.selectionState.draggedGraphNode !== this) return;
 
-		this.props.graph.selectionState.unselectGraphNode(this);
+		this.props.graph.selectionState.draggedGraphNode = null;
 		this.props.graph.selectionState.isGraphMoveable = true;
 	}
 
 	private onMouseMove(event: MouseEvent): void {
-		if (!this.props.graph.selectionState.isGraphNodeSelected(this)) return;
+		if (event.ctrlKey) {
+			if (this.props.graph.selectionState.isGraphNodeSelected(this)) {
+				this.updatePosition(event);
+				return;
+			}
+		}
 
+		if (this.props.graph.selectionState.draggedGraphNode !== this) return;
 		this.updatePosition(event);
 	}
 
 	private onClick(event: React.MouseEvent): void {
 		if (!event.ctrlKey) return;
-		this.toggleHighlight();
-
-		/*const selectionService = this.props.graph.selectionState;
-		if (selectionService.isGraphNodeSelected(this)) {
-			selectionService.unselectGraphNode(this);
+		if (this.props.graph.selectionState.isGraphNodeSelected(this)) {
+			this.props.graph.selectionState.selectGraphNode(this);
 		} else {
-			selectionService.selectGraphNode(this);
-		}*/
+			this.props.graph.selectionState.unselectGraphNode(this);
+		}
 	}
 
 	private onClose(): void {

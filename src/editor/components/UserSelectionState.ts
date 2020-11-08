@@ -4,14 +4,24 @@ import GraphNodeOutput from "./graph/GraphNodeOutput";
 import BaseGraphNodeProperty from "./graph/GraphNodeProperties";
 
 export default class UserSelectionState {
+	private _draggedGraphNode: GraphNode | null;
 	private _selectedGraphNodes: Map<Guid, GraphNode>;
 	private _selectedGraphNodeIO: GraphNodeOutput<any> | BaseGraphNodeProperty<any> | null;
 	private _isGraphMoveable: boolean;
 
 	constructor() {
+		this._draggedGraphNode = null;
 		this._selectedGraphNodes = new Map<Guid, GraphNode>();
 		this._selectedGraphNodeIO = null;
 		this._isGraphMoveable = true;
+	}
+
+	public get draggedGraphNode(): GraphNode | null {
+		return this._draggedGraphNode;
+	}
+
+	public set draggedGraphNode(graphNode: GraphNode | null) {
+		this._draggedGraphNode = graphNode;
 	}
 
 	public get selectedGraphNodes(): Map<Guid, GraphNode> {
@@ -28,10 +38,12 @@ export default class UserSelectionState {
 
 	public selectGraphNode(graphNode: GraphNode): void {
 		this._selectedGraphNodes.set(graphNode.props.node.id, graphNode);
+		graphNode.toggleHighlight();
 	}
 
 	public unselectGraphNode(graphNode: GraphNode): void {
 		this._selectedGraphNodes.delete(graphNode.props.node.id);
+		graphNode.toggleHighlight();
 	}
 
 	public set isGraphMoveable(moveable: boolean) {

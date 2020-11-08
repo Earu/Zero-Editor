@@ -240,8 +240,8 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 
 		this.updateTransform();
 
-		for (const [, graphNode] of this._selectionState.selectedGraphNodes) {
-			graphNode.updatePosition(event);
+		if (this._selectionState.draggedGraphNode) {
+			this._selectionState.draggedGraphNode.updatePosition(event);
 		}
 	}
 
@@ -287,6 +287,7 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 			}
 
 			this._selectionState.isGraphMoveable = true;
+			this._selectionState.draggedGraphNode = null;
 		}
 	}
 
