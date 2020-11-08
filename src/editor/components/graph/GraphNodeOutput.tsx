@@ -11,7 +11,7 @@ interface IGraphNodeOutputProperties<T> {
 }
 
 export default class GraphNodeOutput<T> extends React.Component<IGraphNodeOutputProperties<T>> {
-	private _userSelectionRef: React.RefObject<HTMLDivElement> | null = null;
+	private _userSelectionRef: React.RefObject<HTMLDivElement>;
 
 	constructor(props: any) {
 		super(props);
@@ -43,7 +43,6 @@ export default class GraphNodeOutput<T> extends React.Component<IGraphNodeOutput
 	}
 
 	public componentDidMount(): void {
-		if (!this._userSelectionRef) return;
 		this.props.output.userSelector = this._userSelectionRef.current;
 	}
 

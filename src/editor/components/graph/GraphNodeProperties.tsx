@@ -14,7 +14,7 @@ interface IGraphNodePropertyProperties<T> {
 }
 
 export default class BaseGraphNodeProperty<T> extends React.Component<IGraphNodePropertyProperties<T>> {
-	protected _userSelectionRef: React.RefObject<any> | null = null;
+	protected _userSelectionRef: React.RefObject<any>;
 
 	constructor(props: any) {
 		super(props);
@@ -59,7 +59,6 @@ export default class BaseGraphNodeProperty<T> extends React.Component<IGraphNode
 	}
 
 	public componentDidMount(): void {
-		if (!this._userSelectionRef) return;
 		this.props.property.userSelector = this._userSelectionRef.current;
 	}
 

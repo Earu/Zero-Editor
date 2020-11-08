@@ -27,27 +27,47 @@ interface IGraphState {
 }
 
 export default class Graph extends React.Component<IGraphProperties, IGraphState> {
-	private _currentZoom: number = 1;
-	private mouseDown: boolean = false;
+	private DOMElementRef: React.RefObject<HTMLDivElement>;
+	private _currentZoom: number;
+	private mouseDown: boolean;
 
-	private moveable: boolean = true;
-	private initialGrabX: number = 0;
-	private initialGrabY: number = 0;
-	private _xOffset: number = 0;
-	private _yOffset: number = 0;
+	private moveable: boolean;
+	private initialGrabX: number;
+	private initialGrabY: number;
+	private _xOffset: number;
+	private _yOffset: number;
 
 	private _nodeTable: Map<Guid, Node>;
-	private _selectedGraphNode: GraphNode | null = null;
-	private _selectedGraphNodeIO: GraphNodeOutput<any> | BaseGraphNodeProperty<any> | null = null;
+	private selectedGraphNodes: Map<Guid, GraphNode>;
+	private _selectedGraphNodeIO: GraphNodeOutput<any> | BaseGraphNodeProperty<any> | null;
 
-	private _canvas: HTMLCanvasElement | null = null;
-	private _canvasContext: CanvasRenderingContext2D | null = null;
+	private _canvas: HTMLCanvasElement | null;
+	private _canvasContext: CanvasRenderingContext2D | null;
 
-	private _mouseX: number = 0;
-	private _mouseY: number = 0;
+	private _mouseX: number;
+	private _mouseY: number;
 
 	constructor(props: IGraphProperties) {
 		super(props);
+		this.DOMElementRef = React.createRef();
+		this._currentZoom = 1;
+		this.mouseDown = false;
+
+		this.moveable = true;
+		this.initialGrabX = 0;
+		this.initialGrabY = 0;
+		this._xOffset = 0;
+		this._yOffset = 0;
+
+		this.selectedGraphNodes = new Map<Guid, GraphNode>();
+		this._selectedGraphNodeIO = null;
+
+		this._canvas = null;
+		this._canvasContext = null;
+
+		this._mouseX = 0;
+		this._mouseY = 0;
+
 		this.props.editor.graph = this;
 		this._nodeTable = new Map<Guid, Node>();
 		this.state = { nodes: [] };
@@ -55,6 +75,10 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 
 	public get editor(): Editor<NodeFactory> {
 		return this.props.editor;
+	}
+
+	public get DOMElement(): HTMLDivElement | null {
+		return this.DOMElementRef.current;
 	}
 
 	public get currentZoom(): number {
@@ -77,20 +101,26 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 		return this._nodeTable;
 	}
 
-	public set selectedGraphNode(node: GraphNode | null) {
-		this._selectedGraphNode = node;
-	}
-
-	public get selectedGraphNode(): GraphNode | null {
-		return this._selectedGraphNode;
-	}
-
 	public set selectedGraphNodeIO(IO: GraphNodeOutput<any> | BaseGraphNodeProperty<any> | null) {
 		this._selectedGraphNodeIO = IO;
 	}
 
 	public get selectedGraphNodeIO(): GraphNodeOutput<any> | BaseGraphNodeProperty<any> | null {
 		return this._selectedGraphNodeIO;
+	}
+
+	public selectGraphNode(graphNode: GraphNode): void {
+		this.selectedGraphNodes.set(graphNode.props.node.id, graphNode);
+		graphNode.setSelected(true);
+	}
+
+	public unselectGraphNode(graphNode: GraphNode): void {
+		this.selectedGraphNodes.delete(graphNode.props.node.id);
+		graphNode.setSelected(false);
+	}
+
+	public isGraphNodeSelected(graphNode: GraphNode): boolean {
+		return this.selectedGraphNodes.has(graphNode.props.node.id);
 	}
 
 	public pageToGraphCoordinates(x: number, y: number): IPosition {
@@ -124,7 +154,7 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 	}
 
 	private updateTransform(): void {
-		const graph: HTMLElement = document.getElementById("graph") as HTMLElement;
+		const graph = this.DOMElementRef.current;
 		if (graph) {
 			graph.style.transform = `translateX(${-this._xOffset}px) translateY(${-this._yOffset}px) scale(${this._currentZoom})`;
 		}
@@ -241,8 +271,8 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 
 		this.updateTransform();
 
-		if (this._selectedGraphNode) {
-			this._selectedGraphNode.updatePosition(event);
+		for (const [, graphNode] of this.selectedGraphNodes) {
+			graphNode.updatePosition(event);
 		}
 	}
 
@@ -281,7 +311,9 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 	}
 
 	public componentDidMount(): void {
-		const graph: HTMLElement = document.getElementById("graph") as HTMLElement;
+		const graph = this.DOMElementRef.current;
+		if (!graph) return;
+
 		if (graph) {
 			graph.addEventListener("wheel", this.onWheel.bind(this));
 			graph.addEventListener("mousedown", this.onMouseDown.bind(this));
@@ -366,7 +398,7 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 			<div id="graph" style={{
 				width: GRID_SIZE, height: GRID_SIZE,
 				left: -(GRID_SIZE_HALF - (window.innerWidth / 2)), top: -(GRID_SIZE_HALF - (window.innerHeight / 2))
-			}} onMouseLeave={this.graphMouseLeave.bind(this)}>
+			}} onMouseLeave={this.graphMouseLeave.bind(this)} ref={this.DOMElementRef}>
 				<div id="backplane" onMouseUp={this.backplaneMouseUp.bind(this)} />
 				{this.renderNodes()}
 			</div>

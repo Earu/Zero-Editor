@@ -5,6 +5,7 @@
 	z-index: 500;
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
+	border: none;
 }
 
 .graph-node>.header {

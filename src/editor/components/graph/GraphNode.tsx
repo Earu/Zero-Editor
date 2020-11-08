@@ -11,10 +11,27 @@ interface IGraphNodeProperties {
 
 const NODE_HEADER_HEIGHT: number = 21;
 
+/*
+READ THIS:
+WE NEVER WANT TO UPDATE OR CREATE A STATE FOR THIS COMPONENT
+BECAUSE IF WE EVER DID THE CHANGES MADE BY THE USER WOULD BE LOST
+EVERYTIME THE STATE UPDATES, IF NOT THIS IS UNDEFINED REACT
+BEHAVIOR ANYWAY. /!\ SO NEVER ADD A STATE TO THIS COMPONENT /!\.
+*/
 export default class GraphNode extends React.Component<IGraphNodeProperties> {
-	private offsetX: number = 0;
-	private offsetY: number = 0;
-	private offsetZoom: number = 0;
+	private DOMElementRef: React.RefObject<HTMLDivElement>;
+	private offsetX: number;
+	private offsetY: number;
+	private offsetZoom: number;
+
+	constructor(props: any) {
+		super(props);
+
+		this.DOMElementRef = React.createRef();
+		this.offsetX = 0;
+		this.offsetY = 0;
+		this.offsetZoom = 0;
+	}
 
 	private onMouseDown(event: React.MouseEvent): void {
 		const x = this.props.node.x, y = this.props.node.y
@@ -24,14 +41,14 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 		this.offsetY = event.pageY - screenPos.y;
 		this.offsetZoom = zoom;
 
-		this.props.graph.selectedGraphNode = this;
+		this.props.graph.selectGraphNode(this);
 		this.props.graph.isMoveable = false;
 	}
 
 	private onMouseUp(): void {
-		if (this.props.graph.selectedGraphNode !== this) return;
+		if (!this.props.graph.isGraphNodeSelected(this)) return;
 
-		this.props.graph.selectedGraphNode = null;
+		this.props.graph.unselectGraphNode(this);
 		this.props.graph.isMoveable = true;
 	}
 
@@ -42,7 +59,7 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 	}
 
 	private onMouseMove(event: MouseEvent): void {
-		if (this.props.graph.selectedGraphNode !== this) return;
+		if (!this.props.graph.isGraphNodeSelected(this)) return;
 
 		this.updatePosition(event);
 	}
@@ -59,8 +76,13 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 		this.props.graph.updateNodes();
 	}
 
+	public setSelected(selected: boolean): void {
+		if (!this.DOMElementRef.current) return;
+		this.DOMElementRef.current.style.border = selected ? "1px dashed orange" : "none";
+	}
+
 	public componentDidMount(): void {
-		const graph: HTMLElement = document.getElementById("graph") as HTMLElement;
+		const graph = this.props.graph.DOMElement;
 		if (graph) {
 			graph.addEventListener("mousemove", this.onMouseMove.bind(this));
 		}
@@ -69,7 +91,7 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 	}
 
 	public componentWillUnmount(): void {
-		const graph: HTMLElement = document.getElementById("graph") as HTMLElement;
+		const graph = this.props.graph.DOMElement;
 		if (graph) {
 			graph.removeEventListener("mousemove", this.onMouseMove);
 		}
@@ -103,7 +125,7 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 					position: "absolute",
 					left: this.props.node.x,
 					top: this.props.node.y,
-					width: this.props.node.width}}>
+					width: this.props.node.width}} ref={this.DOMElementRef}>
 				<div style={{
 						backgroundImage: `linear-gradient(to right, ${this.props.node.color}, #111)`,
 						height: NODE_HEADER_HEIGHT,
