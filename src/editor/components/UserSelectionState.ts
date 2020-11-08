@@ -3,7 +3,7 @@ import GraphNode from "./graph/GraphNode";
 import GraphNodeOutput from "./graph/GraphNodeOutput";
 import BaseGraphNodeProperty from "./graph/GraphNodeProperties";
 
-export default class UserSelectionService {
+export default class UserSelectionState {
 	private _selectedGraphNodes: Map<Guid, GraphNode>;
 	private _selectedGraphNodeIO: GraphNodeOutput<any> | BaseGraphNodeProperty<any> | null;
 	private _isGraphMoveable: boolean;
@@ -28,7 +28,10 @@ export default class UserSelectionService {
 
 	public selectGraphNode(graphNode: GraphNode): void {
 		this._selectedGraphNodes.set(graphNode.props.node.id, graphNode);
-		graphNode.setSelected(true);
+	}
+
+	public unselectGraphNode(graphNode: GraphNode): void {
+		this._selectedGraphNodes.delete(graphNode.props.node.id);
 	}
 
 	public set isGraphMoveable(moveable: boolean) {
@@ -37,11 +40,6 @@ export default class UserSelectionService {
 
 	public get isGraphMoveable(): boolean {
 		return this._isGraphMoveable;
-	}
-
-	public unselectGraphNode(graphNode: GraphNode): void {
-		this._selectedGraphNodes.delete(graphNode.props.node.id);
-		graphNode.setSelected(false);
 	}
 
 	public isGraphNodeSelected(graphNode: GraphNode): boolean {

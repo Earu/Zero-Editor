@@ -23,6 +23,7 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 	private offsetX: number;
 	private offsetY: number;
 	private offsetZoom: number;
+	private highlighted: boolean;
 
 	constructor(props: any) {
 		super(props);
@@ -31,6 +32,7 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 		this.offsetX = 0;
 		this.offsetY = 0;
 		this.offsetZoom = 0;
+		this.highlighted = false;
 	}
 
 	private onMouseDown(event: React.MouseEvent): void {
@@ -41,27 +43,33 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 		this.offsetY = event.pageY - screenPos.y;
 		this.offsetZoom = zoom;
 
-		this.props.graph.selectionService.selectGraphNode(this);
-		this.props.graph.selectionService.isGraphMoveable = false;
+		this.props.graph.selectionState.selectGraphNode(this);
+		this.props.graph.selectionState.isGraphMoveable = false;
 	}
 
 	private onMouseUp(): void {
-		if (!this.props.graph.selectionService.isGraphNodeSelected(this)) return;
+		if (!this.props.graph.selectionState.isGraphNodeSelected(this)) return;
 
-		this.props.graph.selectionService.unselectGraphNode(this);
-		this.props.graph.selectionService.isGraphMoveable = true;
-	}
-
-	private onKeyDown(event: KeyboardEvent) {
-		if (event.key === "Escape" || event.which === 27) {
-			this.onMouseUp();
-		}
+		this.props.graph.selectionState.unselectGraphNode(this);
+		this.props.graph.selectionState.isGraphMoveable = true;
 	}
 
 	private onMouseMove(event: MouseEvent): void {
-		if (!this.props.graph.selectionService.isGraphNodeSelected(this)) return;
+		if (!this.props.graph.selectionState.isGraphNodeSelected(this)) return;
 
 		this.updatePosition(event);
+	}
+
+	private onClick(event: React.MouseEvent): void {
+		if (!event.ctrlKey) return;
+		this.toggleHighlight();
+
+		/*const selectionService = this.props.graph.selectionState;
+		if (selectionService.isGraphNodeSelected(this)) {
+			selectionService.unselectGraphNode(this);
+		} else {
+			selectionService.selectGraphNode(this);
+		}*/
 	}
 
 	private onClose(): void {
@@ -76,27 +84,18 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 		this.props.graph.updateNodes();
 	}
 
-	public setSelected(selected: boolean): void {
+	public toggleHighlight(): void {
 		if (!this.DOMElementRef.current) return;
-		this.DOMElementRef.current.style.border = selected ? "1px dashed orange" : "none";
+		this.highlighted = !this.highlighted;
+		this.DOMElementRef.current.style.border = this.highlighted ? "1px dashed orange" : "none";
 	}
 
 	public componentDidMount(): void {
-		const graph = this.props.graph.DOMElement;
-		if (graph) {
-			graph.addEventListener("mousemove", this.onMouseMove.bind(this));
-		}
-
-		document.body.addEventListener("keydown", this.onKeyDown.bind(this));
+		this.props.graph.DOMElement?.addEventListener("mousemove", this.onMouseMove.bind(this));
 	}
 
 	public componentWillUnmount(): void {
-		const graph = this.props.graph.DOMElement;
-		if (graph) {
-			graph.removeEventListener("mousemove", this.onMouseMove);
-		}
-
-		document.body.addEventListener("keydown", this.onKeyDown);
+		this.props.graph.DOMElement?.removeEventListener("mousemove", this.onMouseMove);
 	}
 
 	private renderProperties(): Array<JSX.Element> {
@@ -131,6 +130,7 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 						height: NODE_HEADER_HEIGHT,
 						cursor: "move"
 					}}
+					onClick={this.onClick.bind(this)}
 					onMouseDown={this.onMouseDown.bind(this)}
 					onMouseUp={this.onMouseUp.bind(this)}
 					className="header">
