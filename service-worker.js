@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/Zero-Editor/precache-manifest.fb0f0136697a2b344890f1f323f449f1.js"
+  "/Zero-Editor/precache-manifest.26593365a36db9fcf92e47a11679c72c.js"
 );
 
 self.addEventListener('message', (event) => {
