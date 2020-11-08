@@ -8,8 +8,8 @@ import Node from "../../nodes/Node";
 import GraphNode from "./GraphNode";
 import IPosition from "./IPosition";
 import BaseGraphNodeProperty from "./GraphNodeProperties";
-import GraphNodeOutput from "./GraphNodeOutput";
 import NodeFactory from "../../nodes/NodeFactory";
+import UserSelectionService from "../UserSelectionService";
 
 const GRID_SIZE: number = 10000; // in px
 const GRID_SIZE_HALF: number = 5000; // in px
@@ -27,19 +27,17 @@ interface IGraphState {
 }
 
 export default class Graph extends React.Component<IGraphProperties, IGraphState> {
+	private _selectionService: UserSelectionService;
 	private DOMElementRef: React.RefObject<HTMLDivElement>;
 	private _currentZoom: number;
-	private mouseDown: boolean;
+	private isMouseDown: boolean;
 
-	private moveable: boolean;
 	private initialGrabX: number;
 	private initialGrabY: number;
 	private _xOffset: number;
 	private _yOffset: number;
 
 	private _nodeTable: Map<Guid, Node>;
-	private selectedGraphNodes: Map<Guid, GraphNode>;
-	private _selectedGraphNodeIO: GraphNodeOutput<any> | BaseGraphNodeProperty<any> | null;
 
 	private _canvas: HTMLCanvasElement | null;
 	private _canvasContext: CanvasRenderingContext2D | null;
@@ -49,18 +47,15 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 
 	constructor(props: IGraphProperties) {
 		super(props);
+		this._selectionService = new UserSelectionService();
 		this.DOMElementRef = React.createRef();
 		this._currentZoom = 1;
-		this.mouseDown = false;
+		this.isMouseDown = false;
 
-		this.moveable = true;
 		this.initialGrabX = 0;
 		this.initialGrabY = 0;
 		this._xOffset = 0;
 		this._yOffset = 0;
-
-		this.selectedGraphNodes = new Map<Guid, GraphNode>();
-		this._selectedGraphNodeIO = null;
 
 		this._canvas = null;
 		this._canvasContext = null;
@@ -75,6 +70,10 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 
 	public get editor(): Editor<NodeFactory> {
 		return this.props.editor;
+	}
+
+	public get selectionService(): UserSelectionService {
+		return this._selectionService;
 	}
 
 	public get DOMElement(): HTMLDivElement | null {
@@ -99,28 +98,6 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 
 	public get nodeTable(): Map<Guid, Node> {
 		return this._nodeTable;
-	}
-
-	public set selectedGraphNodeIO(IO: GraphNodeOutput<any> | BaseGraphNodeProperty<any> | null) {
-		this._selectedGraphNodeIO = IO;
-	}
-
-	public get selectedGraphNodeIO(): GraphNodeOutput<any> | BaseGraphNodeProperty<any> | null {
-		return this._selectedGraphNodeIO;
-	}
-
-	public selectGraphNode(graphNode: GraphNode): void {
-		this.selectedGraphNodes.set(graphNode.props.node.id, graphNode);
-		graphNode.setSelected(true);
-	}
-
-	public unselectGraphNode(graphNode: GraphNode): void {
-		this.selectedGraphNodes.delete(graphNode.props.node.id);
-		graphNode.setSelected(false);
-	}
-
-	public isGraphNodeSelected(graphNode: GraphNode): boolean {
-		return this.selectedGraphNodes.has(graphNode.props.node.id);
 	}
 
 	public pageToGraphCoordinates(x: number, y: number): IPosition {
@@ -172,16 +149,8 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 		inputZ.value = (this._currentZoom * 10).toFixed(2);
 	}
 
-	public set isMoveable(moveable: boolean) {
-		this.moveable = moveable;
-	}
-
-	public get isMoveable(): boolean {
-		return this.moveable;
-	}
-
 	public setTransform(xOffset: number | null = null, yOffset: number | null = null, scale: number | null = null) {
-		if (!this.moveable) return;
+		if (!this._selectionService.isGraphMoveable) return;
 
 		const scaleCoefTopLeft: number = (this._currentZoom * GRID_SIZE_HALF) + MOVING_FREEDOM;
 
@@ -245,15 +214,15 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 	}
 
 	private backplaneMouseUp(): void {
-		if (!this._selectedGraphNodeIO) return;
-		this._selectedGraphNodeIO = null;
-		this.moveable = true;
+		if (!this._selectionService.selectedGraphNodeIO) return;
+		this._selectionService.selectedGraphNodeIO = null;
+		this._selectionService.isGraphMoveable = true;
 	}
 
 	private graphMouseLeave(): void {
-		if (!this._selectedGraphNodeIO) return;
-		this._selectedGraphNodeIO = null;
-		this.moveable = true;
+		if (!this._selectionService.selectedGraphNodeIO) return;
+		this._selectionService.selectedGraphNodeIO = null;
+		this._selectionService.isGraphMoveable = true;
 	}
 
 	private onWheel(event: WheelEvent): void {
@@ -271,7 +240,7 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 
 		this.updateTransform();
 
-		for (const [, graphNode] of this.selectedGraphNodes) {
+		for (const [, graphNode] of this._selectionService.selectedGraphNodes) {
 			graphNode.updatePosition(event);
 		}
 	}
@@ -287,7 +256,7 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 	}
 
 	private onMouseDown(event: MouseEvent): void {
-		this.mouseDown = true;
+		this.isMouseDown = true;
 		document.body.style.cursor = "grabbing";
 
 		this.initialGrabX = this.getMouseX(event) + this._xOffset;
@@ -295,7 +264,7 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 	}
 
 	private onMouseUp(): void {
-		this.mouseDown = false;
+		this.isMouseDown = false;
 		document.body.style.cursor = "auto";
 	}
 
@@ -303,7 +272,7 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 		this._mouseX = this.getMouseX(event);
 		this._mouseY = this.getMouseY(event);
 
-		if (!this.mouseDown) return;
+		if (!this.isMouseDown) return;
 
 		const x: number = this.getMouseX(event);
 		const y: number = this.getMouseY(event);
@@ -343,10 +312,10 @@ export default class Graph extends React.Component<IGraphProperties, IGraphState
 		context.strokeStyle = "#eeeeee";
 		context.lineWidth = 3 * this._currentZoom;
 
-		if (this._selectedGraphNodeIO) {
-			const selector: HTMLElement | null = (this._selectedGraphNodeIO instanceof BaseGraphNodeProperty) ?
-				this._selectedGraphNodeIO.props.property.userSelector :
-				this._selectedGraphNodeIO.props.output.userSelector;
+		if (this._selectionService.selectedGraphNodeIO) {
+			const selector: HTMLElement | null = (this._selectionService.selectedGraphNodeIO instanceof BaseGraphNodeProperty) ?
+				this._selectionService.selectedGraphNodeIO.props.property.userSelector :
+				this._selectionService.selectedGraphNodeIO.props.output.userSelector;
 
 			if (selector) {
 				const rect = selector.getBoundingClientRect();

@@ -41,15 +41,15 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 		this.offsetY = event.pageY - screenPos.y;
 		this.offsetZoom = zoom;
 
-		this.props.graph.selectGraphNode(this);
-		this.props.graph.isMoveable = false;
+		this.props.graph.selectionService.selectGraphNode(this);
+		this.props.graph.selectionService.isGraphMoveable = false;
 	}
 
 	private onMouseUp(): void {
-		if (!this.props.graph.isGraphNodeSelected(this)) return;
+		if (!this.props.graph.selectionService.isGraphNodeSelected(this)) return;
 
-		this.props.graph.unselectGraphNode(this);
-		this.props.graph.isMoveable = true;
+		this.props.graph.selectionService.unselectGraphNode(this);
+		this.props.graph.selectionService.isGraphMoveable = true;
 	}
 
 	private onKeyDown(event: KeyboardEvent) {
@@ -59,7 +59,7 @@ export default class GraphNode extends React.Component<IGraphNodeProperties> {
 	}
 
 	private onMouseMove(event: MouseEvent): void {
-		if (!this.props.graph.isGraphNodeSelected(this)) return;
+		if (!this.props.graph.selectionService.isGraphNodeSelected(this)) return;
 
 		this.updatePosition(event);
 	}
