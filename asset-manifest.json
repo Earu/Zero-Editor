@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/Zero-Editor/static/css/main.917c45eb.chunk.css",
-    "main.js": "/Zero-Editor/static/js/main.d56ede39.chunk.js",
-    "main.js.map": "/Zero-Editor/static/js/main.d56ede39.chunk.js.map",
+    "main.js": "/Zero-Editor/static/js/main.a870567c.chunk.js",
+    "main.js.map": "/Zero-Editor/static/js/main.a870567c.chunk.js.map",
     "runtime-main.js": "/Zero-Editor/static/js/runtime-main.24943b5a.js",
     "runtime-main.js.map": "/Zero-Editor/static/js/runtime-main.24943b5a.js.map",
     "static/js/2.890747d6.chunk.js": "/Zero-Editor/static/js/2.890747d6.chunk.js",
     "static/js/2.890747d6.chunk.js.map": "/Zero-Editor/static/js/2.890747d6.chunk.js.map",
     "index.html": "/Zero-Editor/index.html",
-    "precache-manifest.fb0f0136697a2b344890f1f323f449f1.js": "/Zero-Editor/precache-manifest.fb0f0136697a2b344890f1f323f449f1.js",
+    "precache-manifest.26593365a36db9fcf92e47a11679c72c.js": "/Zero-Editor/precache-manifest.26593365a36db9fcf92e47a11679c72c.js",
     "service-worker.js": "/Zero-Editor/service-worker.js",
     "static/css/main.917c45eb.chunk.css.map": "/Zero-Editor/static/css/main.917c45eb.chunk.css.map",
     "static/js/2.890747d6.chunk.js.LICENSE.txt": "/Zero-Editor/static/js/2.890747d6.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.24943b5a.js",
     "static/js/2.890747d6.chunk.js",
     "static/css/main.917c45eb.chunk.css",
-    "static/js/main.d56ede39.chunk.js"
+    "static/js/main.a870567c.chunk.js"
   ]
 }
